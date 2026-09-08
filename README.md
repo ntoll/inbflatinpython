@@ -37,6 +37,7 @@ live examples, in [the documentation](docs/).
     score.py        the default score
     inbflat.py      the stagehand (the score's vocabulary)
     verses.py       the poem, timed
+    in-c.pdf        the score for In C, by Terry Riley
     fonts/          Mebinac, the site's voice
     videos/         the ensemble, with SOURCES.txt
     examples/       scores to steal from
