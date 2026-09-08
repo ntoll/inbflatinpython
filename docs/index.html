@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InB♭InPython - Docs</title>
+  <link rel="stylesheet" href="../style.css">
+  <script type="module"
+    src="https://importpython.org/v/test/embed.js"></script>
+</head>
+<body>
+  <main aria-label="Documentation">
+    <header>
+      <h1>InB&flat;InPython docs</h1>
+      <p id="controls">
+        <a href="../"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 6v5a4 4 0 0 1-4 4H6"/><path d="M9 12l-3 3 3 3"/></svg>Back</a>
+      </p>
+    </header>
+
+    <h2 id="welcome-to-the-concert-hall">Welcome to the concert hall <a class="anchor" href="#welcome-to-the-concert-hall" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      InB&flat;InPython is a virtual concert hall with two creative spaces.
+    </p>
+    <p>
+      The <em>rehearsal room</em> is the light one you arrived
+      from: a code editor holding a score, and a Play button.
+    </p>
+    <p>
+      The <em>stage</em> is the dark one: press Play and
+      twenty musicians - each a short video, everyone playing
+      in the key of B&flat; - wait in the wings for your code
+      to call on them. The top of the stage contains the Stop
+      button, which returns you to the code, and log messages
+      that tell you what's going on. 
+    </p>
+    <p>
+      The code is the score, and you are the
+      conductor.
+    </p>
+    <p>
+      This page tells the story of that score, from one
+      solo musician to a full interactive production. Along the
+      way, small examples run live right here in the page (press
+      the Run buttons - they are real Python, in your browser,
+      courtesy of <a href="https://importpython.org/" target="_blank">importpython.org</a>
+      and <a href="https://micropython.org/" target="_blank">MicroPython</a>).
+      Each idea ends with a link that opens the real
+      rehearsal room with a real score, ready to read, modify and perform.
+      Musical terms are explained as they arrive; no musical
+      training is assumed, only curiosity and a willingness to play.
+    </p>
+
+    <h2 id="your-first-musician">Your first musician <a class="anchor" href="#your-first-musician" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      A performance is a special Python function - one
+      declared with <code>async def</code>, which means "this
+      unfolds through time". Inside it, <code>await</code> means
+      "wait here until this is done". That's the only programming 
+      theory you really need to know.
+    </p>
+    <p>
+      To get a feel what <code>await</code> does before any music
+      is involved, run this - and notice the pauses are real:
+    </p>
+
+    <import-python type="mpy" terminal title="Feeling time pass">
+<pre>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a beat...&quot;</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;another beat...&quot;</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rests are part of the music.&quot;</span><span class="p">)</span>
+</pre>
+    </import-python>
+
+    <p>
+      Here is the smallest score that makes a sound:
+    </p>
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">enter</span><span class="p">,</span> <span class="n">start</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One musician, one entrance.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;mallets&quot;</span><span class="p">)</span>
+
+
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+    <p>
+      <code>enter()</code> brings a musician on stage - their
+      video fades up in a randomly chosen seat and begins to
+      sound - and <code>start()</code> is the downbeat that
+      sets the whole performance going.
+    </p>
+<p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20enter%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22One%20musician%2C%20one%20entrance.%22%22%22%0A%20%20%20%20await%20enter(%22mallets%22)%0A%0A%0Astart(performance())%0A">Hear one musician enter</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+    
+    
+
+    <h2 id="rests">Rests <a class="anchor" href="#rests" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      In music, a <em>rest</em> is written silence - as
+      deliberate as any note. On this stage,
+      <code>await rest(6)</code> is six seconds of patience;
+      <code>await rest(2, 10)</code> randomly chooses
+      somewhere between two and ten seconds of silence. Rests are where the
+      listening happens, and they are what turn a list of
+      entrances into a piece:
+    </p>
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">enter</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Three entrances, with room to listen between.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;rhodes keyboard&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;clarinet&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;vocals&quot;</span><span class="p">)</span>
+
+
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20enter%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22Three%20entrances%2C%20with%20room%20to%20listen%20between.%22%22%22%0A%20%20%20%20await%20enter(%22rhodes%20keyboard%22)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20await%20enter(%22clarinet%22)%0A%20%20%20%20await%20rest(2%2C%2010)%0A%20%20%20%20await%20enter(%22vocals%22)%0A%0A%0Astart(performance())%0A">Hear the rests at work</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+    <h2 id="rolling-the-dice">Rolling the dice <a class="anchor" href="#rolling-the-dice" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      Terry Riley's "In C" (1964) and Darren Solomon's
+      "In Bb 2.0" (2009) - the two ancestors of this piece -
+      are <em>aleatoric</em> music: composed chance (from the
+      Latin <em>alea</em> for dice). The composer decides what is possible;
+      the dice decide what happens at the moment of performance. In Python the
+      dice are the <code>random</code> module, and
+      <code>random.seed()</code> is the beautiful trick that
+      makes chance repeatable: the same seed deals the same
+      random shuffle, every time.
+    </p>
+    <import-python type="mpy" terminal
+      title="Seeded dice deal the same hand">
+      <p>Here's <code>band.py</code> - that defines the list of musicians.</p>
+      <pre title="band.py">
+<span class="n">MUSICIANS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;mallets&quot;</span><span class="p">,</span> <span class="s2">&quot;electric guitar&quot;</span><span class="p">,</span> <span class="s2">&quot;kaoss pad&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rhodes keyboard&quot;</span><span class="p">,</span> <span class="s2">&quot;plastic toy sax&quot;</span><span class="p">,</span> <span class="s2">&quot;electric bass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;harmon trumpet&quot;</span><span class="p">,</span> <span class="s2">&quot;clarinet&quot;</span><span class="p">,</span> <span class="s2">&quot;vocals&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;banjo with ebow&quot;</span><span class="p">,</span> <span class="s2">&quot;the poem&quot;</span><span class="p">,</span> <span class="s2">&quot;korg ds-10&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;acoustic guitar&quot;</span><span class="p">,</span> <span class="s2">&quot;balloons ambience&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;omnichord and qchord&quot;</span><span class="p">,</span> <span class="s2">&quot;ebow&quot;</span><span class="p">,</span> <span class="s2">&quot;synth cello&quot;</span><span class="p">,</span> <span class="s2">&quot;emx-1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;acoustic piano&quot;</span><span class="p">,</span> <span class="s2">&quot;acoustic violin&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+      </pre>
+      <p>And the deal - run it twice; it never changes because we set a seed (1935):</p>
+<pre>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">band</span><span class="w"> </span><span class="kn">import</span> <span class="n">MUSICIANS</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">shuffle</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fisher-Yates shuffling.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">items</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1935</span><span class="p">)</span>
+<span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">MUSICIANS</span><span class="p">)</span>
+<span class="n">shuffle</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tonight&#39;s first five, for seed 1935:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+</pre>
+    </import-python>
+    <p>
+      That is MicroPython's own shuffle, so it deals exactly
+      as the stage does. On the stage, all of this is one
+      line: <code>arrange()</code> shuffles the musicians and
+      returns your orchestra. Change the seed and press Play
+      again: a different group of musicians will appear. Keep
+      the seed the same and press Play again: the same group
+      will appear in exactly the same order.
+    </p>
+<pre>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">arrange</span><span class="p">,</span> <span class="n">enter</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
+
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>  <span class="c1"># Change this number to change the seed.</span>
+<span class="n">orchestra</span> <span class="o">=</span> <span class="n">arrange</span><span class="p">(</span><span class="n">musicians</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The dice decide who plays, and in what order.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">musician</span> <span class="ow">in</span> <span class="n">orchestra</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="n">musician</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+
+
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=import%20random%0Afrom%20inbflat%20import%20arrange%2C%20enter%2C%20rest%2C%20start%0A%0Arandom.seed(42)%20%20%23%20Change%20this%20number%20to%20change%20the%20seed.%0Aorchestra%20%3D%20arrange(musicians%3D6)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22The%20dice%20decide%20who%20plays%2C%20and%20in%20what%20order.%22%22%22%0A%20%20%20%20for%20musician%20in%20orchestra%3A%0A%20%20%20%20%20%20%20%20await%20enter(musician)%0A%20%20%20%20%20%20%20%20await%20rest(4%2C%209)%0A%0A%0Astart(performance())%0A">Let the dice arrange an orchestra</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+    <h2 id="polyphony">Polyphony <a class="anchor" href="#polyphony" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      <em>Polyphony</em> is a musical term we use to mean "how many voices sound at
+      once". Twenty at all at once is a glorious cacophony; three to five is a subtle
+      texture.
+    </p>
+    <p>
+      <code>arrange(musicians=8, polyphony=2)</code>
+      caps the stage at two performers at once: everyone else waits in the wings.
+      Each <code>rest()</code>, after the stage is full, holds on
+      until a musician exits, then counts its silence before the
+      next musician enters -
+      so the pause always sits between an exit and an entry.
+    </p>
+<pre>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">arrange</span><span class="p">,</span> <span class="n">enter</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
+
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">43</span><span class="p">)</span>
+<span class="n">orchestra</span> <span class="o">=</span> <span class="n">arrange</span><span class="p">(</span><span class="n">musicians</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">polyphony</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Two voices at once; the rest wait in the wings.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">musician</span> <span class="ow">in</span> <span class="n">orchestra</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="n">musician</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=import%20random%0Afrom%20inbflat%20import%20arrange%2C%20enter%2C%20rest%2C%20start%0A%0Arandom.seed(43)%0Aorchestra%20%3D%20arrange(musicians%3D8%2C%20polyphony%3D2)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22Two%20voices%20at%20once%3B%20the%20rest%20wait%20in%20the%20wings.%22%22%22%0A%20%20%20%20for%20musician%20in%20orchestra%3A%0A%20%20%20%20%20%20%20%20await%20enter(musician)%0A%20%20%20%20%20%20%20%20await%20rest(2%2C%205)%0A%0A%0Astart(performance())%0A">Hear two voices take turns</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+    <h2 id="playing-together">Playing together <a class="anchor" href="#playing-together" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      Chance is only one way to compose. You can also
+      <em>through-compose</em>: write every entrance yourself,
+      no random musical dice at all.
+    </p>
+    <p>
+      For that you will want simultaneity -
+      <code>ensemble()</code> performs several things as one
+      and returns when the last has finished. And the musicians
+      comes pre-sorted into sections in the <code>inbflat</code> module, as orchestras do:
+      <code>strings</code>, <code>winds</code>,
+      <code>keyboards</code>, <code>electronics</code>,
+      <code>percussion</code> and <code>voices</code> are
+      ordinary Python lists you can loop over - or ignore,
+      and compose your own by mood.
+    </p>
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">enter</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The winds arrive as one, then a string joins them.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">ensemble</span><span class="p">(</span>
+        <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;harmon trumpet&quot;</span><span class="p">),</span>
+        <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;clarinet&quot;</span><span class="p">),</span>
+        <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;plastic toy sax&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;acoustic violin&quot;</span><span class="p">)</span>
+
+
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20enter%2C%20ensemble%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22The%20winds%20arrive%20as%20one%2C%20then%20a%20string%20joins%20them.%22%22%22%0A%20%20%20%20await%20ensemble(%0A%20%20%20%20%20%20%20%20enter(%22harmon%20trumpet%22)%2C%0A%20%20%20%20%20%20%20%20enter(%22clarinet%22)%2C%0A%20%20%20%20%20%20%20%20enter(%22plastic%20toy%20sax%22)%2C%0A%20%20%20%20)%0A%20%20%20%20await%20rest(10)%0A%20%20%20%20await%20enter(%22acoustic%20violin%22)%0A%0A%0Astart(performance())%0A">Hear the winds arrive as one</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+    <h2 id="dynamics">Dynamics <a class="anchor" href="#dynamics" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      <em>Dynamics</em> are music's louds and softs. A
+      <em>crescendo</em> grows; a <em>diminuendo</em> quietens;
+      and <em>al niente</em> - "to nothing" - is the musical term
+      for a fade that ends in silence. When a musician's part
+      says <em>tacet</em>, they simply stop playing and sit
+      quietly; on this stage <code>tacet()</code> fades them
+      al niente (sound and video together), and frees their
+      voice for whoever waits in the wings. They can always
+      <code>enter()</code> again later.
+    </p>
+    <p>
+        The <code>crescendo()</code> and <code>diminuendo()</code> functions work in the same
+        way: they take a musician's name, a target volume (between
+        <code>0.0</code> [silence] and <code>1.0</code> [loudest]), and a duration in seconds
+        over which the change occurs.
+    </p>
+    <p>
+        The <code>tacet()</code> function takes a musician's name and an optional
+        duration (<code>niente</code>) in seconds, over which to fade to silence.
+        If the <code>niente</code> argument is omitted, the fade occurs over 4 seconds,
+        if it is set to <code>0</code>, the musician suddenly stops.
+    </p>
+    <p>
+        It's also possible to set the musician's initial dynamic level when they enter the stage,
+        by passing a <code>dynamic</code> argument to <code>enter()</code>. The value should be
+        between <code>0.0</code> (silence) and <code>1.0</code> (loudest).
+    </p>
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">crescendo</span><span class="p">,</span> <span class="n">diminuendo</span><span class="p">,</span> <span class="n">enter</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span>
+                     <span class="n">start</span><span class="p">,</span> <span class="n">tacet</span><span class="p">)</span>
+ 
+ 
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Louder, softer, and away to nothing.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;mallets&quot;</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">crescendo</span><span class="p">(</span><span class="s2">&quot;mallets&quot;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">diminuendo</span><span class="p">(</span><span class="s2">&quot;mallets&quot;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">tacet</span><span class="p">(</span><span class="s2">&quot;mallets&quot;</span><span class="p">,</span> <span class="n">niente</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+ 
+ 
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20(crescendo%2C%20diminuendo%2C%20enter%2C%20rest%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20start%2C%20tacet)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22Louder%2C%20softer%2C%20and%20away%20to%20nothing.%22%22%22%0A%20%20%20%20await%20enter(%22mallets%22%2C%20dynamic%3D0.3)%0A%20%20%20%20await%20rest(10)%0A%20%20%20%20await%20crescendo(%22mallets%22%2C%20to%3D1.0%2C%20over%3D4)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20await%20diminuendo(%22mallets%22%2C%20to%3D0.3%2C%20over%3D4)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20await%20tacet(%22mallets%22%2C%20niente%3D8)%0A%0A%0Astart(performance())%0A">Hear the mallets rise, sink and vanish</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+    <h2 id="the-lighting-desk">The lighting desk <a class="anchor" href="#the-lighting-desk" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      A <em>followspot</em> is the moving beam that picks a
+      soloist out of the dark; a <em>wash</em> is even light
+      across the whole stage, where nobody is special.
+      <code>followspot("electric guitar")</code> brightens one
+      musician and dims the rest; calling it on someone else
+      moves the light; <code>wash()</code> restores equality.
+      Purely visual - pair it with a crescendo when you want
+      ears and eyes agreeing about who matters.
+    </p>
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">enter</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">,</span> <span class="n">followspot</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span>
+                     <span class="n">start</span><span class="p">,</span> <span class="n">wash</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Three arrive; the light finds one; then an even wash.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">ensemble</span><span class="p">(</span>
+        <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;electric guitar&quot;</span><span class="p">),</span>
+        <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;electric bass&quot;</span><span class="p">),</span>
+        <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;kaoss pad&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">followspot</span><span class="p">(</span><span class="s2">&quot;electric guitar&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">wash</span><span class="p">()</span>
+
+
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20(enter%2C%20ensemble%2C%20followspot%2C%20rest%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20start%2C%20wash)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22Three%20arrive%3B%20the%20light%20finds%20one%3B%20then%20an%20even%20wash.%22%22%22%0A%20%20%20%20await%20ensemble(%0A%20%20%20%20%20%20%20%20enter(%22electric%20guitar%22)%2C%0A%20%20%20%20%20%20%20%20enter(%22electric%20bass%22)%2C%0A%20%20%20%20%20%20%20%20enter(%22kaoss%20pad%22)%2C%0A%20%20%20%20)%0A%20%20%20%20await%20rest(8)%0A%20%20%20%20followspot(%22electric%20guitar%22)%0A%20%20%20%20await%20rest(8)%0A%20%20%20%20wash()%0A%0A%0Astart(performance())%0A">See the followspot move</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+    <h2 id="words-on-the-stage">Words on the stage <a class="anchor" href="#words-on-the-stage" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      One of the twenty performers speaks rather than plays:
+      "Information", a poem written and read by Daniel
+      Donahoo, whose lines rise across the stage as the poem
+      is recited.
+    </p>
+    <p>
+      You can also make use of this capability for your own words.
+    </p>
+    <p>
+      <code>caption()</code> floats one line of your own;
+      <code>proclaim()</code> gives words the big, centred,
+      still treatment of the poem's close; both take an
+      optional <code>hold</code> argument in seconds (with defaults of
+      <code>6</code> and <code>12</code> respectively). The
+      <code>recite()</code> function takes a whole timed sequence of
+      <code>(seconds, text)</code> pairs - your poem, should
+      you have one.
+    </p>
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">caption</span><span class="p">,</span> <span class="n">enter</span><span class="p">,</span> <span class="n">proclaim</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A musician, a caption, and a proclamation.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;acoustic piano&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">caption</span><span class="p">(</span><span class="s2">&quot;words can join the music&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">proclaim</span><span class="p">(</span><span class="s2">&quot;and some arrive with weight&quot;</span><span class="p">)</span>
+
+
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20caption%2C%20enter%2C%20proclaim%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22A%20musician%2C%20a%20caption%2C%20and%20a%20proclamation.%22%22%22%0A%20%20%20%20await%20enter(%22acoustic%20piano%22)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20await%20caption(%22words%20can%20join%20the%20music%22)%0A%20%20%20%20await%20rest(8)%0A%20%20%20%20await%20proclaim(%22and%20some%20arrive%20with%20weight%22)%0A%0A%0Astart(performance())%0A">See words join the music</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+    <h2 id="the-audience-s-instrument">The audience's instrument <a class="anchor" href="#the-audience-s-instrument" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      "In C" and "In Bb" are both examples of community music-making.
+      This site encourages community music-making by sharing code. 
+      But the <code>keys()</code> function enlarges that community
+      to the audience: a row of soft round keys along the
+      foot of the stage, each sounding a note of the B&flat;
+      major pentatonic scale - five notes chosen so that
+      nothing you press can be wrong. A <em>timbre</em> is a
+      sound's character - the reason a trumpet and a violin
+      playing the same note sound different - and the
+      keys come with four: <code>"bell"</code>,
+      <code>"pluck"</code>, <code>"breath"</code> and
+      <code>"drone"</code>.
+    </p>
+
+    <pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">caption</span><span class="p">,</span> <span class="n">enter</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
+ 
+ 
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A drone settles, then the keys are yours.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;ebow&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">keys</span><span class="p">(</span><span class="s2">&quot;pluck&quot;</span><span class="p">)</span>  <span class="c1"># Or &quot;bell&quot;, &quot;breath&quot; and &quot;drone&quot;</span>
+    <span class="k">await</span> <span class="n">caption</span><span class="p">(</span><span class="s2">&quot;press a key - whatever you play belongs&quot;</span><span class="p">)</span>
+ 
+ 
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20caption%2C%20enter%2C%20keys%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22A%20drone%20settles%2C%20then%20the%20keys%20are%20yours.%22%22%22%0A%20%20%20%20await%20enter(%22ebow%22)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20keys(%22pluck%22)%20%20%23%20Or%20%22bell%22%2C%20%22breath%22%20and%20%22drone%22%0A%20%20%20%20await%20caption(%22press%20a%20key%20-%20whatever%20you%20play%20belongs%22)%0A%0A%0Astart(performance())%0A">Settle a drone and play along</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+<p>
+      The available notes are a musical decision too, and flats and
+      sharps are both welcome. Here the audience gets the
+      B&flat; blues scale - the pentatonic's streetwise
+      cousin, whose flattened fifth makes everything sound
+      knowing - so whatever they press is up to something:
+    </p>
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">caption</span><span class="p">,</span> <span class="n">enter</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
+ 
+ 
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A blues palette for the audience, spelled in sharps.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;electric bass&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">keys</span><span class="p">(</span><span class="s2">&quot;pluck&quot;</span><span class="p">,</span> <span class="n">notes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Bb3&quot;</span><span class="p">,</span> <span class="s2">&quot;C#4&quot;</span><span class="p">,</span> <span class="s2">&quot;D#4&quot;</span><span class="p">,</span> <span class="s2">&quot;E4&quot;</span><span class="p">,</span> <span class="s2">&quot;F4&quot;</span><span class="p">,</span> <span class="s2">&quot;G#4&quot;</span><span class="p">])</span>
+    <span class="k">await</span> <span class="n">caption</span><span class="p">(</span><span class="s2">&quot;a B flat blues - press something bent&quot;</span><span class="p">)</span>
+ 
+ 
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+    <p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20caption%2C%20enter%2C%20keys%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22A%20blues%20palette%20for%20the%20audience%2C%20spelled%20in%20sharps.%22%22%22%0A%20%20%20%20await%20enter(%22electric%20bass%22)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20keys(%22pluck%22%2C%20notes%3D%5B%22Bb3%22%2C%20%22C%234%22%2C%20%22D%234%22%2C%20%22E4%22%2C%20%22F4%22%2C%20%22G%234%22%5D)%0A%20%20%20%20await%20caption(%22a%20B%20flat%20blues%20-%20press%20something%20bent%22)%0A%0A%0Astart(performance())%0A">Play along with a B&flat; blues</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+
+    <p>
+      The key's timbre is nothing more than a function that makes
+      a sound.
+    </p>
+    <p>
+      Here is a bell built from first principles -
+      an oscillator and an envelope - with a button to ring
+      it. Change the frequency, the wave, the ramps: this is
+      how instruments are born, and a function like
+      <code>ring</code>, taking the audio context and a
+      frequency, is exactly what
+      <code>keys(timbre=...)</code> accepts. MDN explains
+      the raw materials beautifully: the
+      <a target="_blank"
+        href="https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode">oscillator</a>
+      that makes the tone, and a full
+      <a target="_blank"
+        href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Advanced_techniques">tutorial
+      on shaping sounds with envelopes</a>.
+    </p>
+    <import-python type="mpy" title="Build a bell"
+      run-label="Build" stop-label="Dismantle">
+      <p>First of all, we need a nicely styled button as HTML, so we can ring the bell:</p>
+      <pre data-role="body">
+<span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#faf7f1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="k">grid</span><span class="p">;</span>
+<span class="w">    </span><span class="k">place-items</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
+<span class="w">    </span><span class="k">min-height</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="kt">rem</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">button</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font</span><span class="p">:</span><span class="w"> </span><span class="mf">1.05</span><span class="kt">rem</span><span class="w"> </span><span class="n">Georgia</span><span class="p">,</span><span class="w"> </span><span class="kc">serif</span><span class="p">;</span>
+<span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="kt">rem</span><span class="w"> </span><span class="mf">1.8</span><span class="kt">rem</span><span class="p">;</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#faf7f1</span><span class="p">;</span>
+<span class="w">    </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#23201b</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">cursor</span><span class="p">:</span><span class="w"> </span><span class="kc">pointer</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">button</span><span class="p">:</span><span class="nd">hover</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#3d382f</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;ring&quot;</span><span class="p">&gt;</span>Ring the bell<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</pre>
+
+    <p>And here's the Python code to make the bell ring:</p>
+
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bfp</span><span class="w"> </span><span class="kn">import</span> <span class="n">web</span><span class="p">,</span> <span class="n">window</span>
+
+<span class="n">audio</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ring</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One soft bell, built from first principles.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">audio</span>
+    <span class="k">if</span> <span class="n">audio</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">audio</span> <span class="o">=</span> <span class="n">window</span><span class="o">.</span><span class="n">AudioContext</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">audio</span><span class="o">.</span><span class="n">currentTime</span>
+    <span class="n">tone</span> <span class="o">=</span> <span class="n">audio</span><span class="o">.</span><span class="n">createOscillator</span><span class="p">()</span>
+    <span class="n">tone</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;sine&quot;</span>
+    <span class="n">tone</span><span class="o">.</span><span class="n">frequency</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mf">233.08</span>  <span class="c1"># B flat.</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="n">audio</span><span class="o">.</span><span class="n">createGain</span><span class="p">()</span>
+    <span class="n">level</span><span class="o">.</span><span class="n">gain</span><span class="o">.</span><span class="n">setValueAtTime</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">now</span><span class="p">)</span>
+    <span class="n">level</span><span class="o">.</span><span class="n">gain</span><span class="o">.</span><span class="n">linearRampToValueAtTime</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">now</span> <span class="o">+</span> <span class="mf">0.02</span><span class="p">)</span>
+    <span class="n">level</span><span class="o">.</span><span class="n">gain</span><span class="o">.</span><span class="n">exponentialRampToValueAtTime</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">now</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">tone</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">level</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">audio</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+    <span class="n">tone</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+    <span class="n">tone</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">now</span> <span class="o">+</span> <span class="mf">2.1</span><span class="p">)</span>
+
+
+<span class="n">web</span><span class="o">.</span><span class="n">page</span><span class="p">[</span><span class="s2">&quot;ring&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">on_click</span> <span class="o">=</span> <span class="n">ring</span>
+</pre>
+    </import-python>
+
+    <h2 id="seats-and-props">Seats and props <a class="anchor" href="#seats-and-props" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      The stage has twenty seats in a grid, five across and
+      four deep, numbered 0 to 19 reading left to right, top
+      to bottom. (Musicians count from one and programmers
+      from zero; the management is aware of the dispute.) The
+      dice normally choose seating, but <code>enter(name,
+      seat=...)</code> places a musician exactly, and
+      <code>prop()</code> seats any element you can build
+      with <code>bfp.web</code> - a sign, a picture, a button
+      of your own devising. Props take seats but not voices:
+      the polyphony ignores furniture.
+    </p>
+<pre>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bfp</span><span class="w"> </span><span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">enter</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">performance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A front row arranged by hand, and one prop.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;mallets&quot;</span><span class="p">,</span> <span class="n">seat</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;acoustic guitar&quot;</span><span class="p">,</span> <span class="n">seat</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">enter</span><span class="p">(</span><span class="s2">&quot;acoustic violin&quot;</span><span class="p">,</span> <span class="n">seat</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">rest</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">prop</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;(reserved)&quot;</span><span class="p">),</span> <span class="n">seat</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+
+<span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
+</pre>
+<p><a target="_blank" rel="opener" href="../#score=from%20bfp%20import%20web%0Afrom%20inbflat%20import%20enter%2C%20prop%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22A%20front%20row%20arranged%20by%20hand%2C%20and%20one%20prop.%22%22%22%0A%20%20%20%20await%20enter(%22mallets%22%2C%20seat%3D0)%0A%20%20%20%20await%20rest(3)%0A%20%20%20%20await%20enter(%22acoustic%20guitar%22%2C%20seat%3D2)%0A%20%20%20%20await%20rest(3)%0A%20%20%20%20await%20enter(%22acoustic%20violin%22%2C%20seat%3D4)%0A%20%20%20%20await%20rest(3)%0A%20%20%20%20prop(web.p(%22(reserved)%22)%2C%20seat%3D3)%0A%0A%0Astart(performance())%0A">Arrange a front row by hand</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
+
+    <h2 id="take-it-it-is-yours">Take it - it is yours <a class="anchor" href="#take-it-it-is-yours" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <p>
+      Every link above works because of a small honest trick:
+      the Share button in the rehearsal room puts your whole
+      score into the address after the <code>#</code> - the
+      URL fragment, which never leaves your browser - and
+      copies the link. Send it anywhere; whoever opens it
+      finds your score in their editor. There is no server,
+      no account, no saving: a performance simply is its
+      link.
+    </p>
+    <p>
+      So: change a seed. Compose a section of your own. Fade
+      the whole band al niente and proclaim something. Write
+      a poem and <code>recite()</code> it over the drones.
+      Build an instrument nobody has heard. The twenty
+      musicians of "In Bb 2.0" have been waiting many years
+      in the wings for a conductor exactly like you -
+      and whatever you do, it will be in B&flat;, so it
+      cannot be wrong.
+    </p>
+    <p>Have fun! Share your music! Participate in the community!</p>
+    <p>Best wishes,</p>
+    <p><a href="https://ntoll.org/" target="_blank">Nicholas</a>.</p>
+    <footer>
+      <p id="controls-foot">
+        <a href="../"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 6v5a4 4 0 0 1-4 4H6"/><path d="M9 12l-3 3 3 3"/></svg>Back</a>
+      </p>
+    </footer>
+  </main>
+</body>
+</html>

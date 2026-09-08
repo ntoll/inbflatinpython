@@ -1,0 +1,444 @@
+/* Mebinac, the voice of ntoll.org, embedded so the
+   single file travels with its typography. */
+@font-face {
+  font-family: "Mebinac";
+  src: url("fonts/mebinac.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+/* Two rooms share these intentions: a serif voice
+   throughout (the poem asks for it, and we do not mix
+   families), a rehearsal room in daylight, a stage in
+   the dark. */
+:root {
+  --serif: "Mebinac", Georgia, "Times New Roman",
+    Times, serif;
+  --mono: ui-monospace, "Cascadia Code", "SF Mono",
+    Menlo, Consolas, monospace;
+  --rehearsal-paper: #faf7f1;
+  --rehearsal-ink: #23201b;
+  --rehearsal-line: #c9c1b1;
+  --code-paper: #f3eee1;
+  --control-raised: #3d382f;
+  --stage-dark: #0f1013;
+  --stage-ink: #f2ede3;
+  --stage-line: #2a2c31;
+  --error-ink: #8c1d18;
+  --curtain-fade: 0.9s;
+  --entrance-fade: 2.4s;
+  --verse-fade: 1.4s;
+}
+/* The animation is a courtesy, so its absence is too. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --curtain-fade: 0s;
+    --entrance-fade: 0s;
+    --verse-fade: 0s;
+  }
+}
+body {
+  margin: 0;
+  font-family: var(--serif);
+  background: var(--rehearsal-paper);
+  color: var(--rehearsal-ink);
+  line-height: 1.5;
+}
+/* The rehearsal room: a readable page of daylight. */
+main {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+  transition: opacity var(--curtain-fade),
+    visibility var(--curtain-fade);
+}
+body.performing main {
+  opacity: 0;
+  visibility: hidden;
+}
+main header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+h1 {
+  font-size: 2.3rem;
+  margin: 0 0 0.2rem;
+}
+h2 {
+  font-size: 1.3rem;
+  margin: 2rem 0 0.4rem;
+}
+/* Section links: quiet until the heading is visited by
+   pointer or keyboard, then a small chain appears whose
+   address is copyable from the URL bar once clicked. */
+h2 .anchor {
+  margin-inline-start: 0.4rem;
+  color: inherit;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+h2:hover .anchor,
+h2 .anchor:focus-visible {
+  opacity: 0.55;
+}
+h2 .anchor svg {
+  width: 0.7em;
+  height: 0.7em;
+}
+a {
+  color: inherit;
+}
+#editor {
+  border: 1px solid var(--rehearsal-line);
+  font-size: 0.95rem;
+}
+button,
+#controls a,
+#controls-foot a {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: normal;
+  padding: 0.4rem 1.8rem;
+  cursor: pointer;
+  background: var(--rehearsal-ink);
+  color: var(--rehearsal-paper);
+  border: 1px solid var(--rehearsal-ink);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+/* Every control answers the pointer (and keyboard focus):
+   in the paper rooms a warmer lift, while the hall's own
+   rules keep their glow-in-the-dark. */
+button:hover,
+button:focus-visible,
+#controls a:hover,
+#controls a:focus-visible,
+#controls-foot a:hover,
+#controls-foot a:focus-visible {
+  background: var(--control-raised);
+  box-shadow: 0 0.1rem 0.5rem rgba(35, 32, 27, 0.35);
+}
+#controls a,
+#controls-foot a {
+  display: inline-block;
+  text-decoration: none;
+}
+/* The icons sit in the ink of their controls, sized to the
+   type beside them. */
+button svg,
+#controls a svg,
+#controls-foot a svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.12em;
+  margin-inline-end: 0.45em;
+}
+#share-note {
+  display: block;
+  font-size: 0.9rem;
+  min-height: 1.3rem;
+  opacity: 0.8;
+}
+/* The About dialog: a page of the room, floated over a
+   translucent blur of everything else. */
+dialog {
+  max-width: 40rem;
+  border: 1px solid var(--rehearsal-line);
+  border-radius: 0.3em;
+  padding: 1.5rem;
+  background: var(--rehearsal-paper);
+  color: var(--rehearsal-ink);
+  font-family: var(--serif);
+}
+dialog::backdrop {
+  background: rgba(35, 32, 27, 0.35);
+  backdrop-filter: blur(4px);
+}
+dialog > button {
+  float: inline-end;
+  margin-inline-start: 1rem;
+}
+/* The error report exists only when there is an error
+   to report. */
+#errors:empty {
+  display: none;
+}
+#errors {
+  color: var(--error-ink);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}
+/* The concert hall: dark, full screen, arrived at by fade. */
+#hall {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--stage-dark);
+  color: var(--stage-ink);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--curtain-fade),
+    visibility var(--curtain-fade);
+}
+body.performing #hall {
+  opacity: 1;
+  visibility: visible;
+}
+#hall header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.4rem 1rem;
+  border-bottom: 1px solid var(--stage-line);
+}
+#brand {
+  margin: 0;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+/* A small breathing light: alive while the piece
+   sounds, still when the final performer stops. */
+#pulse {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--stage-ink);
+  flex: none;
+  animation: breathe 2.4s ease-in-out infinite;
+}
+#pulse.still {
+  animation: none;
+  opacity: 0.25;
+}
+@keyframes breathe {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #pulse { animation: none; opacity: 0.6; }
+}
+#log {
+  flex: 1;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  opacity: 0.75;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#hall button {
+  background: transparent;
+  color: var(--stage-ink);
+  border: 1px solid var(--stage-ink);
+}
+/* A subtle glow on hover (and on keyboard focus), so Stop
+   reads as pressable against the dark. */
+#hall button:hover,
+#hall button:focus-visible {
+  background: rgba(242, 237, 227, 0.14);
+  box-shadow: 0 0 0.6rem rgba(242, 237, 227, 0.25);
+}
+/* The boards hold performers and poem in the same
+   space; the words float above the videos. */
+#boards {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  container-type: size;
+}
+#stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /* Each row is exactly as tall as a seated figure (three
+     quarters of a five-column cell's width), capped so four
+     rows always fit the hall. Sized from the boards' own
+     geometry, the tracks are identical whether seats are
+     empty or full - no jumping as performers arrive - and
+     the centred block stays compact in portrait. */
+  grid-template-rows: repeat(4, min(
+    calc((100cqw - 24px) / 5 * 0.75),
+    calc((100cqh - 20px) / 4)
+  ));
+  align-content: center;
+  gap: 4px;
+  padding: 4px;
+}
+/* Each performer is a uniform 4:3 tile, scaled to
+   whatever seat the grid affords; object-fit trims any
+   stray aspect to the tile, as the original site trimmed
+   its players. */
+#stage figure {
+  margin: 0;
+  position: relative;
+  place-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-height: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  transition: opacity var(--entrance-fade);
+}
+/* Props fit their seats gracefully: centred, never
+   overflowing the bounds of the box. */
+#stage figure > * {
+  max-width: 100%;
+  max-height: 100%;
+}
+#stage video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The audience's keys: a soft row along the foot of
+   the stage. */
+#keys {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0.6rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+#keys button {
+  pointer-events: auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 0.85rem;
+  background: rgba(15, 16, 19, 0.55);
+}
+#verses {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* The poem sits on a breath of darkness: padded,
+   gently darkened, translucent enough that the
+   performers remain visible behind the words. */
+#verses p {
+  position: absolute;
+  margin: 0;
+  max-width: 70%;
+  padding: 0.35em 0.75em;
+  border-radius: 0.3em;
+  line-height: 1.3;
+  color: rgba(242, 237, 227, 0.92);
+  background: rgba(10, 11, 14, 0.55);
+  backdrop-filter: blur(2px);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
+  transition: opacity var(--verse-fade);
+}
+
+/* Documentation: code at rest, and room for the live
+   frames. */
+pre {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  background: var(--code-paper);
+  border: 1px solid var(--rehearsal-line);
+  padding: 0.8rem 1rem;
+  border-radius: 0.3em;
+  overflow-x: auto;
+}
+code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+import-python {
+  display: block;
+  margin-block: 1rem;
+}
+/* The running frame keeps the same breathing room below the
+   buttons as the code keeps above them. */
+import-python iframe {
+  margin-top: 1rem;
+}
+
+/* Pygments token colours for the documentation's code
+   (generated from its default style). */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+pre .hll { background-color: #ffffcc }
+pre .c { color: #3D7B7B; font-style: italic } /* Comment */
+pre .err { border: 1px solid #F00 } /* Error */
+pre .k { color: #008000; font-weight: bold } /* Keyword */
+pre .o { color: #666 } /* Operator */
+pre .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+pre .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+pre .cp { color: #9C6500 } /* Comment.Preproc */
+pre .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+pre .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+pre .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+pre .gd { color: #A00000 } /* Generic.Deleted */
+pre .ge { font-style: italic } /* Generic.Emph */
+pre .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+pre .gr { color: #E40000 } /* Generic.Error */
+pre .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre .gi { color: #008400 } /* Generic.Inserted */
+pre .go { color: #717171 } /* Generic.Output */
+pre .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre .gs { font-weight: bold } /* Generic.Strong */
+pre .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre .gt { color: #04D } /* Generic.Traceback */
+pre .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre .kp { color: #008000 } /* Keyword.Pseudo */
+pre .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre .kt { color: #B00040 } /* Keyword.Type */
+pre .m { color: #666 } /* Literal.Number */
+pre .s { color: #BA2121 } /* Literal.String */
+pre .na { color: #687822 } /* Name.Attribute */
+pre .nb { color: #008000 } /* Name.Builtin */
+pre .nc { color: #00F; font-weight: bold } /* Name.Class */
+pre .no { color: #800 } /* Name.Constant */
+pre .nd { color: #A2F } /* Name.Decorator */
+pre .ni { color: #717171; font-weight: bold } /* Name.Entity */
+pre .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+pre .nf { color: #00F } /* Name.Function */
+pre .nl { color: #767600 } /* Name.Label */
+pre .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+pre .nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre .nv { color: #19177C } /* Name.Variable */
+pre .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+pre .w { color: #BBB } /* Text.Whitespace */
+pre .mb { color: #666 } /* Literal.Number.Bin */
+pre .mf { color: #666 } /* Literal.Number.Float */
+pre .mh { color: #666 } /* Literal.Number.Hex */
+pre .mi { color: #666 } /* Literal.Number.Integer */
+pre .mo { color: #666 } /* Literal.Number.Oct */
+pre .sa { color: #BA2121 } /* Literal.String.Affix */
+pre .sb { color: #BA2121 } /* Literal.String.Backtick */
+pre .sc { color: #BA2121 } /* Literal.String.Char */
+pre .dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre .s2 { color: #BA2121 } /* Literal.String.Double */
+pre .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+pre .sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+pre .sx { color: #008000 } /* Literal.String.Other */
+pre .sr { color: #A45A77 } /* Literal.String.Regex */
+pre .s1 { color: #BA2121 } /* Literal.String.Single */
+pre .ss { color: #19177C } /* Literal.String.Symbol */
+pre .bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre .fm { color: #00F } /* Name.Function.Magic */
+pre .vc { color: #19177C } /* Name.Variable.Class */
+pre .vg { color: #19177C } /* Name.Variable.Global */
+pre .vi { color: #19177C } /* Name.Variable.Instance */
+pre .vm { color: #19177C } /* Name.Variable.Magic */
+pre .il { color: #666 } /* Literal.Number.Integer.Long */

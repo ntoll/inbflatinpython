@@ -1,0 +1,28 @@
+The twenty performances of InB♭InPython, in stage order.
+Each line records the YouTube source, the video's original
+title, and the file it became on this stage.
+
+https://www.youtube.com/watch?v=gqtYwouDzl4 - "In Bb - Mallets 1" - mallets.mp4
+https://www.youtube.com/watch?v=xevYHoXWX0Y - "In Bb - Guitar" - electric-guitar.mp4
+https://www.youtube.com/watch?v=JLn--qQSNN8 - "In Bb - Kaoss Pad/Synth" - kaoss-pad.mp4
+https://www.youtube.com/watch?v=2aJPXS-QRIc - "In Bb - Rhodes" - rhodes-keyboard.mp4
+https://www.youtube.com/watch?v=FWHryVYbmug - "Submission for In Bb 2.0" - plastic-toy-sax.mp4
+https://www.youtube.com/watch?v=JyTRnVQS8PA - "In Bb - Electric Bass 2" - electric-bass.mp4
+https://www.youtube.com/watch?v=PmKWkiDAm5k - "In Bb - Harmon Trumpet" - harmon-trumpet.mp4
+https://www.youtube.com/watch?v=9s7X8PgOf3A - "In Bb - Clarinet 1" - clarinet.mp4
+https://www.youtube.com/watch?v=ztv4rvZ8CaI - "In Bb - Vocals" - vocals.mp4
+https://www.youtube.com/watch?v=TzimeAFr7Ik - "Bb Banjo with EBow and Korg Drone" - banjo-with-ebow.mp4
+https://www.youtube.com/watch?v=w5IERp2OdJs - "information in Bb" - the-poem.mp4
+https://www.youtube.com/watch?v=WMLvKpiG3RA - "In Bb - DS" - korg-ds-10.mp4
+https://www.youtube.com/watch?v=E-DrBhawMfI - "In Bb - Acoustic Guitar" - acoustic-guitar.mp4
+https://www.youtube.com/watch?v=b7F5c8hjiYc - "Balloons (Bb) - Sparse" - balloons-ambience.mp4
+https://www.youtube.com/watch?v=Kh8RRN2_EHc - "Omnichord & Qchord" - omnichord-and-qchord.mp4
+https://www.youtube.com/watch?v=HB7NxVpskI0 - "In Bb - Ebow" - ebow.mp4
+https://www.youtube.com/watch?v=RfhCBiU7gdM - "A Love Of BbMajor" - synth-cello.mp4
+https://www.youtube.com/watch?v=lOSfM2V8EkI - "inBb - ELECTRIBE MX" - emx-1.mp4
+https://www.youtube.com/watch?v=uc8nQmzdAmg - "In B Flat" - acoustic-piano.mp4
+https://www.youtube.com/watch?v=PthlntCFZvo - "In Bflat - Todd Reynolds - violin (2009)" - acoustic-violin.mp4
+
+The poem, "information in Bb", is "Information", written and
+read by Daniel Donahoo. Each performer's .jpg poster is the
+corresponding video's own thumbnail.

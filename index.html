@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InB♭InPython</title>
+  <script type="module" src="https://bfp.dev/test/core.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main aria-label="The rehearsal room">
+    <header>
+      <h1>InB&flat;InPython</h1>
+      <button id="show-about"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8.6 9a3.4 3.4 0 1 1 5.6 2.6c-1 .9-2.2 1.5-2.2 3"/><circle cx="12" cy="18.6" r="1.2" fill="currentColor" stroke="none"/></svg>About</button>
+    </header>
+    <section id="editor" aria-label="The score"></section>
+    <p id="controls">
+      <button id="play"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="6.5" cy="18.5" r="2.5" fill="currentColor"/><circle cx="17.5" cy="16.5" r="2.5" fill="currentColor"/><path d="M9 18.5V6.5L20 4.5v12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 7.5l11-2" fill="none" stroke="currentColor" stroke-width="3.4"/></svg>Play</button>
+      <button id="share"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="5.5" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="M8.4 10.8l7.2-4M8.4 13.2l7.2 4"/></svg>Share</button>
+      <a href="docs/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 6c-2-1.4-4.4-1.9-8-1.9v13.8c3.6 0 6 .5 8 1.9 2-1.4 4.4-1.9 8-1.9V4.1c-3.6 0-6 .5-8 1.9z"/><path d="M12 6v13.8"/></svg>Docs</a>
+    </p>
+    <output id="share-note" aria-live="polite"></output>
+    <pre id="errors" aria-live="polite"></pre>
+  </main>
+
+  <dialog id="about" aria-label="About InB&flat;InPython">
+    <button id="close-about"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"/></svg>Close</button>
+      <h2>What is this?</h2>
+      <p>
+        It's a web-based art installation: a musical score, written in Python, that performs itself in the browser.
+      </p>
+      <h2>Why in B&flat;?</h2>
+      <p>
+        In 1964 the American composer <a href="https://en.wikipedia.org/wiki/Terry_Riley" target="_blank">Terry Riley</a>
+        (non-SSL <a href="http://terryriley.net/" target="_blank">homepage</a>) wrote <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">"In C"</a>: fifty-three short musical phrases
+        <a href="./Terry-Riley-In-C-Score.pdf" target="_blank">on a single page</a>, to be played by any number of
+        musicians, each repeating each phrase as many times as they please before moving on to the next. This isn't so
+        much a composition as a set of instructions for wonderful community music-making. It was also the birth of
+        <a href="https://en.wikipedia.org/wiki/Minimal_music" target="_blank">musical minimalism</a>.
+      </p>
+      <p>
+        Inspired by "In C", in 2009 <a href="https://www.darrensolomon.com/" target="_blank">Darren Solomon</a>
+        invited musicians to video
+        themselves playing in the key of B&flat; and upload the results,
+        so that any of the videos, started at any time and in
+        any combination, would sound good together. The
+        result, <a href="https://www.inbflat.net/" target="_blank">In Bb
+        2.0</a>, is a quietly wonderful corner of the
+        pre-surveillance capitalist web, and its
+        <a href="https://www.inbflat.net/faq.html" target="_blank">FAQ</a>
+        warmly invites remixing - a contemporary form of community music-making.
+      </p>
+      <p>
+        This is such a remix with a focus on playful creative coding
+        as a means of musical expression and experimentation. It's
+        open source, and the code is the score, so you can modify it, and share your changes with others;
+        yet another form of community music-making (through community coding).
+      </p>
+      <h2>How?</h2>
+      <p>
+        Your Python code, in effect the musical score, makes
+        you the conductor. Press Play and the performers enter
+        the virtual stage, until the piece plays itself out; press
+        Stop to return to the code. Randomness is a fun aspect of this,
+        and defining the <code>seed</code> makes chance repeatable: the same
+        seed is the same sequence of randomness every time. It guarantees that
+        the same score will always produce the same performance so you can
+        share your own remix with others.
+      </p>
+      <p>
+        One performer speaks rather than plays:
+        <em>Information</em>, a poem written and read by
+        Daniel Donahoo. If the poem emerges, its
+        words rise across the stage as it speaks.
+      </p>
+      <p>
+        Under the bonnet there is no JavaScript written for
+        this page at all: MicroPython runs your score in the
+        browser via
+        <a href="https://bfp.dev/" target="_blank">Browser Friendly
+        Python</a>, which also builds the stage, seats the
+        performers, and listens for each one to finish. The
+        editor is <a href="https://codemirror.net/" target="_blank">
+        CodeMirror</a>. View source; it is all there.
+      </p>
+      <p>
+        You have a lot of creative freedom:
+        <a href="./docs">read the docs</a>,
+        see what you can do, and make something wonderful to
+        share with others.
+      </p>
+      <p>
+        Best of luck, <a href="https://ntoll.org" target="_blank">Nicholas</a>.
+      </p>
+  </dialog>
+
+  <section id="hall" aria-label="The performance stage">
+    <header>
+      <p id="brand">InB&flat;InPython</p>
+      <button id="stop"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="7" y="7" width="10" height="10" rx="1" fill="currentColor"/></svg>Stop</button>
+      <span id="pulse" aria-hidden="true"></span>
+      <output id="log" aria-live="polite"></output>
+    </header>
+    <div id="boards">
+      <div id="stage" aria-label="The performers"></div>
+      <div id="verses" aria-label="The poem"></div>
+    </div>
+  </section>
+
+  <!-- The single main-thread Python context lives in
+       main.py. The config carries CodeMirror 6 as JavaScript
+       modules, and maps the stagehand, the poem and the
+       initial score in as ordinary files. -->
+  <script type="mpy" debug src="./main.py" config='{
+    "js_modules": {
+      "https://esm.sh/codemirror@6.0.2?deps=@codemirror/state@6.7.1,@codemirror/view@6.43.9,@codemirror/language@6.12.4": "codemirror",
+      "https://esm.sh/@codemirror/lang-python@6.2.1?deps=@codemirror/state@6.7.1,@codemirror/view@6.43.9,@codemirror/language@6.12.4": "lang_python"
+    },
+    "files": {
+      "./inbflat.py": "./inbflat.py",
+      "./verses.py": "./verses.py",
+      "./score.py": "./score.py"
+    }
+  }'></script>
+</body>
+</html>
