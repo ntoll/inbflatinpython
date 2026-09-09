@@ -12,7 +12,7 @@ We welcome everyone, irrespective of their backgrounds. If you're thinking,
 * If you need help with anything, get involved - _we welcome questions asked
   in good faith, and will move mountains to help_.
 
-You **will** meet people working with Invent who are different to yourself.
+You **will** meet people working with our project who are different to yourself.
 This is what we hope for.
 
 Here is what we ask of each other:
