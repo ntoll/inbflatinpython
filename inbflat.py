@@ -70,36 +70,52 @@ voices = ["vocals", "the poem"]
 SEAT_COLUMNS = 5
 SEAT_ROWS = 4
 
-# Mutable state for the current composition, reset by clear().
-_performance = []  # Scheduled tasks, cancelled by clear().
-_players = []      # The performers on stage this performance.
-_seats = None      # This performance's shuffled seating plan.
-_recital = False   # Whether the poem's words have begun in this performance.
-_log_lines = []    # The most recent programme notes.
-_verse_cursor = 3  # Vertical %% cursor for verse placing.
-_voices = None     # Polyphony cap; None means unlimited.
+# Note letters to semitone steps, for the keys.
+_PITCH = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9,
+          "B": 11}
+
+# The concert's state, reset by clear().
+_concert = []       # Scheduled tasks, cancelled by clear().
+_players = []       # The performers on stage.
+_seats = None       # This concert's shuffled seating plan.
+_polyphony = None   # Voice cap; None means unlimited.
+_recital = False    # Whether the poem's words have begun.
+_log_lines = []     # The most recent log entries.
+_verse_cursor = 3   # Vertical % cursor for cascading words.
+_caption_jitter = 0  # Scatter counter for caption().
+_proclaim_slot = 0  # Which mid-stage slot proclaim() uses.
+_audio = None       # Shared audio context for the keys.
 
 
 def _log(message):
     """
-    Add a line to the programme notes in the menu bar,
-    keeping only the most recent few in view.
+    Add `message` to the log in the menu bar. Only the
+    most recent three entries are shown.
     """
     _log_lines.append(message)
     del _log_lines[:-3]
-    area = web.page["log"]
-    if area:
-        area.textContent = "   ".join(
-            [">>> " + note for note in _log_lines]
-        )
+    web.page["log"].textContent = "   ".join(
+        [">>> " + note for note in _log_lines]
+    )
+
+
+def _pulse(breathing):
+    """
+    Set the menu bar's light: `breathing` True animates it,
+    False holds it dim and still.
+    """
+    pulse = web.page["pulse"]
+    if breathing:
+        pulse.classes.remove("still")
+    else:
+        pulse.classes.add("still")
 
 
 def _shuffle(items):
     """
-    Fisher-Yates, in place. MicroPython's random module has
-    no shuffle of its own, so we create our own here. It
-    is built on random.randrange, so the score's random.seed
-    still influences it in a deterministic manner.
+    Shuffle `items` in place, Fisher-Yates. MicroPython's
+    random module has no shuffle of its own; building on
+    random.randrange keeps the score's seed in charge.
     """
     for i in range(len(items) - 1, 0, -1):
         j = random.randrange(i + 1)
@@ -108,43 +124,71 @@ def _shuffle(items):
 
 def arrange(musicians=12, polyphony=None, featuring=None):
     """
-    Arrange an orchestra: how many `musicians` take part, no less
-    than 1. `polyphony` caps how many sound at once -
-    later musicians wait in the wings until a voice falls silent.
-    Naming a performer via `featuring` guarantees them a place,
-    though randomness still chooses when they enter. Asking for
-    more `musicians` than exist simply invites the whole company.
-    The musicians are chosen randomly from the available pool.
+    Arrange an orchestra and return it as a list of names.
+
+    `musicians` is how many take part, chosen and ordered
+    by the seeded shuffle; asking for more than exist
+    invites the whole company. `polyphony`, if given, caps how many
+    sound at once. `featuring`, if given, names a musician
+    guaranteed a place at a random position in the order.
     """
-    if musicians < 1:
-        raise ValueError("Number of musicians must be at least 1.")
-    if polyphony:
-        _set_polyphony(polyphony)
-    if featuring and featuring not in MUSICIANS:
+    global _polyphony
+    if polyphony is not None:
+        _polyphony = max(1, int(polyphony))
+    if featuring is not None and featuring not in MUSICIANS:
         raise ValueError(
             "No performer called " + repr(featuring) + "."
         )
     names = list(MUSICIANS)
     _shuffle(names)
-    orchestra = names[:musicians]
-    if featuring and featuring not in orchestra:
-        orchestra[random.randrange(len(orchestra))] = featuring
-    return orchestra
+    musicians = max(0, min(musicians, len(names)))
+    company = names[:musicians]
+    if featuring is not None and featuring not in company:
+        if company:
+            company[random.randrange(len(company))] = featuring
+        else:
+            company.append(featuring)
+    return company
+
+
+def polyphony(limit):
+    """
+    Cap how many musicians sound at once to `limit` (at
+    least 1). Usually set when arranging; call it
+    mid-performance to thin or thicken the texture.
+    """
+    global _polyphony
+    _polyphony = max(1, int(limit))
+
+
+def _ended_count():
+    """How many entered performers have finished."""
+    return len(
+        [player for player in _players if player["ended"]]
+    )
+
+
+async def _free_voice():
+    """
+    Wait until the polyphony cap admits another voice.
+    Returns at once when there is room or no cap is set.
+    """
+    if _polyphony is None:
+        return
+    while (len(_players) - _ended_count()) >= _polyphony:
+        await asyncio.sleep(0.25)
 
 
 async def rest(shortest=4, longest=None):
     """
-    A musical rest. rest(4) is four seconds of waiting;
-    rest(1, 7) randomly picks somewhere between one and seven
-    seconds of silence; a bare rest() is a default four seconds.
-    When the polyphony is capped and every voice is
-    sounding, a rest first listens until a performer falls silent
-    and only then counts its seconds - so the gap the
-    conductor wrote always sits between an exit and the
-    entrance that follows.
+    Rest for a while.
 
-    Rests are the space where music happens. "My god! What has
-    sound got to do with music?" ~ Charles Ives. ;-)
+    One argument is exact seconds: rest(4). With two, a
+    duration is picked uniformly between `shortest` and
+    `longest`: rest(1, 7). When the polyphony is capped and every voice
+    sounds, the rest first waits for a voice to fall silent,
+    then counts its seconds - so the gap sits between an
+    exit and the entrance that follows.
     """
     await _free_voice()
     if longest is None:
@@ -154,222 +198,23 @@ async def rest(shortest=4, longest=None):
     await asyncio.sleep(max(0, duration))
 
 
-def _pulse(breathing):
-    """
-    Set the menu bar's breathing light: alive while voices
-    still sound, stopped once the final performer has exited.
-    """
-    light = web.page["pulse"]
-    if breathing:
-        light.classes.remove("still")
-    else:
-        light.classes.add("still")
-
-
-def _ended_count():
-    """
-    How many entered performers have finished.
-    """
-    return sum([1 for player in _players if player["ended"]])
-
-
-def _set_polyphony(limit):
-    """
-    Record the polyphony cap after validation.
-    """
-    global _voices
-    _voices = max(1, int(limit))
-
-
-def polyphony(limit):
-    """
-    Cap how many musicians sound at once. Usually set when
-    the orchestra is arranged, but a conductor may change it
-    mid-performance to thin or thicken the texture.
-    """
-    _set_polyphony(limit)
-
-
-async def _free_voice():
-    """
-    Wait in the wings until the polyphony cap admits another
-    voice. Returns at once when the stage has room or no cap
-    is set.
-    """
-    if _voices is None:
-        return
-    while (len(_players) - _ended_count()) >= _voices:
-        await asyncio.sleep(0.25)
-
-
-def _drift(jitter, span, step):
-    """
-    A deterministic value in [0, span) derived from a jitter
-    counter. 
-    
-    The poem's typography should look chance-led,
-    but the seeded random stream belongs to the music, so
-    arithmetic stands in for randomness.
-    """
-    return (jitter * step) % span
-
-
-async def _cascade(text, jitter, hold):
-    """
-    Place a line of words onto the stage.
- 
-    The `text` is displayed on the screen at a horizontal
-    position and size determined by the `jitter` (fed into
-    `_drift`) for `hold` many seconds. Vertical placement is
-    decided via the `global _verse_cursor` that tracks the
-    previous line's box.
-    """
-    global _verse_cursor
-    board = web.page["verses"]
-    if board is None:
-        return
-    verse = web.p(text)
-    verse.style["opacity"] = "0"
-    left = 6 + _drift(jitter, 30, 37)
-    size = 140 + _drift(jitter, 110, 53)
-    verse.style["left"] = str(left) + "%"
-    verse.style["font-size"] = str(size / 100) + "rem"
-    if _verse_cursor > 82:
-        _verse_cursor = 3
-    verse.style["top"] = str(_verse_cursor) + "%"
-    board.append(verse)
-    await asyncio.sleep(0.05)
-    # Measure the rendered box and advance the cursor past
-    # it, so the next line cannot collide with this one.
-    height = verse._dom_element.offsetHeight
-    room = board._dom_element.offsetHeight
-    if room:
-        occupied = height * 100 / room
-        if _verse_cursor + occupied > 97:
-            _verse_cursor = 3
-            verse.style["top"] = "3%"
-        _verse_cursor = _verse_cursor + occupied + 2
-    verse.style["opacity"] = "1"
-    await asyncio.sleep(hold)
-    verse.style["opacity"] = "0"
-
-
-async def _still(text, slot, hold):
-    """
-    The still treatment: a line lands centred and large at
-    one of three mid-stage places, over whatever remains,
-    then fades after its hold. The poem's close and the
-    conductor's proclamations share it.
-    """
-    board = web.page["verses"]
-    if board is None:
-        return
-    verse = web.p(text)
-    verse.style["opacity"] = "0"
-    verse.style["top"] = str(36 + slot * 11) + "%"
-    # The box hugs its words: as wide as the text asks, no
-    # wider than the stage allows, centred by translation.
-    verse.style["left"] = "50%"
-    verse.style["transform"] = "translateX(-50%)"
-    verse.style["width"] = "max-content"
-    verse.style["max-width"] = "80%"
-    verse.style["text-align"] = "center"
-    verse.style["font-size"] = "2.6rem"
-    board.append(verse)
-    await asyncio.sleep(0.05)
-    verse.style["opacity"] = "1"
-    await asyncio.sleep(hold)
-    verse.style["opacity"] = "0"
-
-
-async def _show_verse(index, line):
-    """
-    Place one phrase of the poem: the final three phrases -
-    the close - take the still treatment and hold twelve
-    seconds; the rest cascade.
-    """
-    if index >= len(VERSES) - 3:
-        await _still(line, index - (len(VERSES) - 3), 12)
-    else:
-        await _cascade(line, index, 7)
-
-
-async def _recite():
-    """
-    Speak the poem on the stage: each line is scheduled at
-    its moment, timed from the instant the poem's player
-    reports that it is playing.
-    """
-    elapsed = 0.0
-    for index, (moment, line) in enumerate(VERSES):
-        await asyncio.sleep(max(0, moment - elapsed))
-        elapsed = moment
-        start(_show_verse(index, line))
-
-
 def _media(name, kind):
     """
-    The path convention: a performer's name, spaces as
-    hyphens, finds their video ("mp4") or poster ("jpg")
-    in the videos directory.
+    Return the path of a musician's file in videos/: `name`
+    with spaces as hyphens, plus the `kind` ("mp4" or
+    "jpg").
     """
     return "videos/" + name.replace(" ", "-") + "." + kind
 
 
-def _begin_recital():
-    """Start the poem's words, once, from its first sound."""
-    global _recital
-    if not _recital:
-        _recital = True
-        start(_recite())
-
-
-def _watch(video, player):
-    """
-    Wire a performer's own media events. Native video tells
-    us honestly when it starts and finishes - the very
-    things a YouTube iframe once made us reconstruct from
-    postMessage reports. bfp.web's event table does not yet
-    cover media events, so the listeners attach through the
-    documented _dom_element escape hatch.
-    """
-    def on_playing(event):
-        """Log the entrance; the poem also begins reciting."""
-        if player["started"]:
-            return
-        player["started"] = True
-        _log(player["name"] + " starting")
-        _pulse(True)
-        if player["name"] == "the poem":
-            _begin_recital()
-
-    def on_ended(event):
-        """Log the exit; the fade is the exit itself."""
-        if player["ended"]:
-            return
-        player["ended"] = True
-        _log(player["name"] + " stopping")
-        # The faded frame rests where it is until clear()
-        # sweeps the stage between performances.
-        player["figure"].style["opacity"] = "0"
-        if _ended_count() == len(_players):
-            _pulse(False)
-
-    element = video._dom_element
-    element.addEventListener(
-        "playing", ffi.create_proxy(on_playing)
-    )
-    element.addEventListener(
-        "ended", ffi.create_proxy(on_ended)
-    )
-
-
 def _take_seat(seat):
     """
-    Claim a seat. The dice pick a free one when none is
-    named; a named seat (0 to 19, left to right then top to
-    bottom) is claimed exactly, if it is still free. Returns
-    None for a full house.
+    Claim a seat and return its number.
+
+    With `seat` None a random free seat is claimed, or
+    None is returned for a full house. A named `seat` (0 to 19,
+    left to right then top to bottom) is claimed exactly;
+    a taken or unknown seat raises ValueError.
     """
     global _seats
     if _seats is None:
@@ -388,21 +233,67 @@ def _take_seat(seat):
     return seat
 
 
+async def _reveal(figure):
+    """Fade `figure` up once the browser has placed it."""
+    await asyncio.sleep(0.05)
+    figure.style["opacity"] = "1"
+
+
+def _watch(video, player):
+    """
+    Wire `video`'s media events to `player`'s life on stage.
+
+    A playing event logs the entrance, wakes the pulse and,
+    for the poem, starts the recital. An ended event logs
+    the exit and fades the figure - the frame stays where it
+    is until clear() sweeps the stage. bfp.web's event table
+    does not yet cover media events, so the listeners attach
+    via the _dom_element escape hatch.
+    """
+    def on_playing(event):
+        """Log the entrance; the poem also starts reciting."""
+        global _recital
+        if player["started"]:
+            return
+        player["started"] = True
+        _log(player["name"] + " starting")
+        _pulse(True)
+        if player["name"] == "the poem" and not _recital:
+            _recital = True
+            start(_recite_poem())
+
+    def on_ended(event):
+        """Log the exit; the fade is the exit itself."""
+        if player["ended"]:
+            return
+        player["ended"] = True
+        _log(player["name"] + " stopping")
+        player["figure"].style["opacity"] = "0"
+        if _ended_count() == len(_players):
+            _pulse(False)
+
+    element = video._dom_element
+    element.addEventListener(
+        "playing", ffi.create_proxy(on_playing)
+    )
+    element.addEventListener(
+        "ended", ffi.create_proxy(on_ended)
+    )
+
+
 async def enter(name, seat=None, dynamic=1):
     """
-    Bring a performer on stage - to a seat the dice choose,
-    or to a named seat (0 to 19) so a conductor can arrange
-    the layout of the band - start their video sounding
-    (pressing Play was the gesture that permits it), and
-    fade them in. The dynamic sets the level they begin at,
-    from 0 (silent) to 1 (full): enter someone at 0 and
-    crescendo them, and you have composed a fade-in.
+    Bring a musician on stage and start them sounding.
+
+    `name` is the musician. `seat`, if given, places them
+    exactly (0 to 19); otherwise a random free seat is
+    chosen. `dynamic`
+    is the level they begin at, 0 (silent) to 1 (full) -
+    enter at 0 and crescendo for a composed fade-in. When
+    the polyphony is capped, waits for a free voice first.
     """
     if name not in MUSICIANS:
         raise ValueError("No performer called " + repr(name) + ".")
-    # A backstop for scores that enter without resting:
-    # never exceed the cap. A score whose rests carry the
-    # waiting (the usual shape) never blocks here.
     await _free_voice()
     seat = _take_seat(seat)
     if seat is None:
@@ -429,14 +320,14 @@ async def enter(name, seat=None, dynamic=1):
     web.page["stage"].append(figure)
     player["media"].volume = min(1, max(0, dynamic))
     player["media"].play()
-    await asyncio.sleep(0.05)
-    figure.style["opacity"] = "1"
+    await _reveal(figure)
 
 
 def _find(name):
     """
-    The most recent appearance of a named performer, since a
-    musician who returns after a tacet appears twice.
+    Return the most recent player called `name`, or None. A
+    musician who returns after a tacet appears twice; the
+    latest appearance is the live one.
     """
     for player in reversed(_players):
         if player["name"] == name:
@@ -446,9 +337,8 @@ def _find(name):
 
 async def _glide_media(media, to, over):
     """
-    Slide a media element's volume to a target over some
-    seconds: the engine beneath crescendo, diminuendo and
-    tacet's niente.
+    Slide `media`'s volume to `to` over `over` seconds, in
+    small steps. An `over` of 0 sets it at once.
     """
     to = min(1.0, max(0.0, to))
     if over <= 0:
@@ -463,9 +353,9 @@ async def _glide_media(media, to, over):
 
 async def _glide(name, to, over, marking):
     """
-    Slide a named performer's volume to a target over some
-    seconds, if they are still sounding, noting the marking
-    in the programme.
+    Glide the volume of the player called `name` to `to`
+    over `over` seconds, logging the `marking`. Does nothing
+    if they are absent or already silent.
     """
     player = _find(name)
     if player is None or player["ended"]:
@@ -475,39 +365,23 @@ async def _glide(name, to, over, marking):
 
 
 async def crescendo(name, to=1.0, over=4):
-    """
-    Grow a performer's volume towards the target, over the
-    given seconds. The other half of diminuendo.
-    """
+    """Grow `name`'s volume to `to` over `over` seconds."""
     await _glide(name, to, over, "crescendo")
 
 
 async def diminuendo(name, to=0.2, over=4):
-    """
-    Sink a performer's volume towards the target, over the
-    given seconds. The other half of crescendo.
-    """
+    """Sink `name`'s volume to `to` over `over` seconds."""
     await _glide(name, to, over, "diminuendo")
-
-
-async def ensemble(*parts):
-    """
-    Perform several things as one - most often simultaneous
-    entrances: await ensemble(enter("clarinet"),
-    enter("vocals")). Returns when every part has.
-    """
-    await asyncio.gather(*parts)
 
 
 async def tacet(name, niente=4):
     """
-    The performer falls silent where they sit - tacet, as
-    the part on the stand says. By default the silence
-    arrives al niente: sound and light fade to nothing
-    together over the given seconds, while 0 makes the
-    silence immediate. Their voice returns to the wings at
-    once (so a waiting musician may cross-fade in), and
-    they may enter() again later at a fresh seat.
+    Silence the musician called `name` where they sit.
+
+    Sound and light fade to nothing together over `niente`
+    seconds; 0 is immediate. Their voice frees at once, so a
+    waiting musician may cross-fade in, and they may enter()
+    again later at a fresh seat.
     """
     player = _find(name)
     if player is None or player["ended"]:
@@ -524,12 +398,20 @@ async def tacet(name, niente=4):
         _pulse(False)
 
 
+async def ensemble(*parts):
+    """
+    Perform several `parts` as one, returning when the last
+    finishes: await ensemble(enter("clarinet"),
+    enter("vocals")).
+    """
+    await asyncio.gather(*parts)
+
+
 def followspot(name):
     """
-    Pick one performer out with the followspot: they hold
-    full brightness while the rest of the stage dims down.
-    Calling it on another performer moves the light; wash()
-    restores an even stage.
+    Light only the performer called `name` and dim the rest.
+    Calling it again moves the light; wash() restores an
+    even stage.
     """
     _log("followspot on " + name)
     for player in _players:
@@ -542,39 +424,127 @@ def followspot(name):
 
 
 def wash():
-    """
-    An even wash across the stage: every sounding performer
-    returns to full light and nobody is special.
-    """
+    """Return every sounding performer to full light."""
     _log("an even wash")
     for player in _players:
         if not player["ended"]:
             player["figure"].style["opacity"] = "1"
 
 
-# Jitter and slot counters for the conductor's own words,
-# kept apart from the poem's so neither disturbs the other.
-_caption_index = 0
-_proclaim_slot = 0
+def _drift(jitter, span, step):
+    """
+    Return a deterministic value in [0, `span`).
+
+    `jitter` is a counter and `step` a stride sharing no
+    factor with `span`, so successive values scatter without
+    a short cycle. Used instead of the random module so the
+    words' look never spends the music's seeded stream.
+    """
+    return (jitter * step) % span
+
+
+async def _cascade(text, jitter, hold):
+    """
+    Place a line of words on the stage.
+
+    The `text` is displayed on the screen at a horizontal
+    position and size determined by the `jitter` (fed into
+    `_drift`) for `hold` many seconds. Vertical placement is
+    decided via the `global _verse_cursor` that tracks the
+    previous line's box.
+    """
+    global _verse_cursor
+    verses = web.page["verses"]
+    verse = web.p(text)
+    verse.style["opacity"] = "0"
+    left = 6 + _drift(jitter, 30, 37)
+    size = 140 + _drift(jitter, 110, 53)
+    verse.style["left"] = str(left) + "%"
+    verse.style["font-size"] = str(size / 100) + "rem"
+    if _verse_cursor > 82:
+        _verse_cursor = 3
+    verse.style["top"] = str(_verse_cursor) + "%"
+    verses.append(verse)
+    await asyncio.sleep(0.05)
+    # Measure the rendered box and move the cursor past it,
+    # so the next line cannot collide with this one.
+    height = verse._dom_element.offsetHeight
+    room = verses._dom_element.offsetHeight
+    if room:
+        occupied = height * 100 / room
+        if _verse_cursor + occupied > 97:
+            _verse_cursor = 3
+            verse.style["top"] = "3%"
+        _verse_cursor = _verse_cursor + occupied + 2
+    verse.style["opacity"] = "1"
+    await asyncio.sleep(hold)
+    verse.style["opacity"] = "0"
+
+
+async def _still(text, slot, hold):
+    """
+    Place a line of words centred mid-stage.
+
+    The `text` lands large at one of three heights chosen by
+    `slot` (0 to 2), stays for `hold` seconds, then fades.
+    Its box is as wide as the text needs, capped at 80% of
+    the stage.
+    """
+    verses = web.page["verses"]
+    verse = web.p(text)
+    verse.style["opacity"] = "0"
+    verse.style["top"] = str(36 + slot * 11) + "%"
+    verse.style["left"] = "50%"
+    verse.style["transform"] = "translateX(-50%)"
+    verse.style["width"] = "max-content"
+    verse.style["max-width"] = "80%"
+    verse.style["text-align"] = "center"
+    verse.style["font-size"] = "2.6rem"
+    verses.append(verse)
+    await asyncio.sleep(0.05)
+    verse.style["opacity"] = "1"
+    await asyncio.sleep(hold)
+    verse.style["opacity"] = "0"
+
+
+async def _show_verse(index, line):
+    """
+    Place phrase `index` of the poem, showing `line`. The
+    final three phrases take the still treatment for 12
+    seconds; the rest cascade for 7.
+    """
+    if index >= len(VERSES) - 3:
+        await _still(line, index - (len(VERSES) - 3), 12)
+    else:
+        await _cascade(line, index, 7)
+
+
+async def _recite_poem():
+    """
+    Speak the poem: each phrase of VERSES is scheduled at
+    its recorded moment, timed from this coroutine's start.
+    """
+    elapsed = 0.0
+    for index, (moment, line) in enumerate(VERSES):
+        await asyncio.sleep(max(0, moment - elapsed))
+        elapsed = moment
+        start(_show_verse(index, line))
 
 
 async def caption(text, hold=6):
     """
-    One line of the conductor's own words, given the poem's
-    cascading treatment: it lands clear of other lines,
-    holds, and fades. For a timed sequence see recite(); for
-    the big centred treatment see proclaim().
+    Show one cascading line of `text` for `hold` seconds,
+    placed clear of other lines.
     """
-    global _caption_index
-    _caption_index += 1
-    await _cascade(text, _caption_index * 7 + 3, hold)
+    global _caption_jitter
+    _caption_jitter += 1
+    await _cascade(text, _caption_jitter * 7 + 3, hold)
 
 
 async def proclaim(text, hold=12):
     """
-    Words with the weight of the poem's close: centred,
-    large, mid-stage, over whatever remains, fading after
-    the hold.
+    Show `text` centred and large mid-stage for `hold`
+    seconds - the treatment of the poem's close.
     """
     global _proclaim_slot
     slot = _proclaim_slot % 3
@@ -582,10 +552,11 @@ async def proclaim(text, hold=12):
     await _still(text, slot, hold)
 
 
-async def _speak(lines):
+async def _recite_lines(lines):
     """
-    Deliver (seconds, text) pairs from the moment of
-    scheduling, each line as a caption.
+    Deliver `lines` of (seconds, text) pairs, each as a
+    caption at its moment, timed from this coroutine's
+    start.
     """
     begun = 0.0
     for moment, text in lines:
@@ -596,27 +567,16 @@ async def _speak(lines):
 
 def recite(lines):
     """
-    Speak a timed sequence of the conductor's words: lines
-    is a list of (seconds, text) pairs, timed from this
-    call - the machinery the poem itself uses. Returns the
-    scheduled task.
+    Speak `lines` - a list of (seconds, text) pairs - timed
+    from this call. Returns the scheduled task.
     """
-    return start(_speak(list(lines)))
-
-
-# Note letters to semitone steps, for the keys.
-_PITCH = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9,
-          "B": 11}
-
-# The shared audio context for the keys, created on the
-# first press (a click is the gesture the browser wants).
-_audio = None
+    return start(_recite_lines(list(lines)))
 
 
 def _frequency(note):
     """
-    The frequency of a note named like "Bb3" or "F4", via
-    its MIDI number, tuned to A4 = 440.
+    Return the frequency of `note`, named like "Bb3" or
+    "F#4", tuned to A4 = 440.
     """
     step = _PITCH.get(note[0].upper())
     if step is None:
@@ -637,9 +597,10 @@ def _frequency(note):
 
 def _envelope(audio, frequency, wave, attack, peak, release):
     """
-    One note: an oscillator of the given wave shaped by an
-    attack to its peak and an exponential release to
-    nothing. The engine beneath every built-in timbre.
+    Sound one note through `audio`: an oscillator of the
+    given `wave` at `frequency` rises to `peak` gain over
+    `attack` seconds, then releases exponentially to nothing
+    over `release` seconds.
     """
     now = audio.currentTime
     tone = audio.createOscillator()
@@ -677,8 +638,8 @@ def _drone(audio, frequency):
     _envelope(audio, frequency, "triangle", 0.6, 0.16, 6)
 
 
-# The built-in timbres, by name. A home-made timbre is just
-# a function of (audio, frequency) that makes a sound.
+# The built-in timbres, by name. A home-made timbre is a
+# function of (audio, frequency) that makes a sound.
 _TIMBRES = {
     "bell": _bell,
     "pluck": _pluck,
@@ -689,9 +650,10 @@ _TIMBRES = {
 
 def _sound(frequency, timbre):
     """
-    Sound one note of the chosen timbre, creating the
-    shared audio context on first press (a click is the
-    gesture the browser wants).
+    Sound `frequency` in the given `timbre` - a name from
+    _TIMBRES or a function of (audio, frequency) - creating
+    the shared audio context on first use (a key press is
+    the gesture the browser wants).
     """
     global _audio
     if _audio is None:
@@ -707,17 +669,15 @@ def _sound(frequency, timbre):
 
 def keys(timbre="bell", notes=None):
     """
-    Lay the audience's keys along the foot of the stage:
-    soft round buttons, each sounding a note of the B flat
-    major pentatonic, so whatever is pressed belongs to the
-    piece - the original's promise, moved to the audience's
-    fingertips. The timbre chooses the voice - keys("pluck")
-    - from "bell" (the default), "pluck", "breath" and
-    "drone", or your own function of (audio, frequency)
-    that makes a sound, which is how instruments are born.
-    Pass notes for a different palette: flats and sharps
-    both welcome, like ["Bb3", "F#4", "C5"]. Swept away,
-    like everything, by Stop.
+    Lay a row of keys along the foot of the stage.
+
+    Each key sounds a note when pressed. The `timbre`
+    chooses the voice: "bell", "pluck", "breath", "drone",
+    or your own function of (audio, frequency). The `notes`,
+    if given, set the palette - flats and sharps welcome,
+    like ["Bb3", "F#4", "C5"] - and default to the B flat
+    major pentatonic, so whatever is pressed belongs. Swept
+    away, like everything, by Stop.
     """
     if isinstance(timbre, (list, tuple)):
         raise ValueError(
@@ -752,9 +712,9 @@ def keys(timbre="bell", notes=None):
                 _sound(frequency, timbre)
 
         # An instrument sounds on the way down, not on
-        # release, so these keys bind pointerdown rather
-        # than click - with keydown alongside, since click
-        # was also what let keyboard players play.
+        # release, so keys bind pointerdown rather than
+        # click - with keydown alongside for keyboard
+        # players.
         key = web.button(label)
         key._dom_element.addEventListener(
             "pointerdown", ffi.create_proxy(strike)
@@ -766,21 +726,15 @@ def keys(timbre="bell", notes=None):
     web.page["boards"].append(row)
 
 
-async def _reveal(figure):
-    """Fade a newly placed figure up once it has landed."""
-    await asyncio.sleep(0.05)
-    figure.style["opacity"] = "1"
-
-
 def prop(element, seat=None):
     """
-    Place any element on stage as a prop, seated like a
-    performer and fitted gracefully within its seat's
-    bounds. With no seat given the dice pick a free one; a
-    seat number (0 to 19, left to right, top to bottom)
-    places it exactly, if free. Returns the figure holding
-    it, for further styling. Props take seats but not
-    voices: the polyphony ignores them.
+    Seat any `element` on stage as a prop.
+
+    `seat`, if given, places it exactly (0 to 19);
+    otherwise a random free seat is chosen. Returns the
+    figure holding it, or None for a full house. Props
+    take seats but not voices: the polyphony ignores
+    them.
     """
     seat = _take_seat(seat)
     if seat is None:
@@ -796,40 +750,38 @@ def prop(element, seat=None):
 
 def start(performance):
     """
-    Start a performance: schedule its coroutine as part of
-    the evening, and remember the task so clear() can cancel
-    it. The score calls this once with the whole piece; the
-    stagehand also uses it for every fade and verse, so Stop
+    Schedule the `performance` coroutine and remember its
+    task so clear() can cancel it. Returns the task. The
+    score calls this once with the whole piece; the
+    stagehand uses it for every fade and verse, so Stop
     silences everything at once.
     """
     task = asyncio.create_task(performance)
-    _performance.append(task)
+    _concert.append(task)
     return task
 
 
 def clear():
     """
-    Silence and an empty stage: cancel every scheduled task,
-    remove the performers and the poem's words, and reset
-    the evening's state.
+    Stop everything and empty the stage: cancel every task,
+    remove the players, the words and the keys, and reset
+    the concert's state.
     """
-    global _seats, _recital, _verse_cursor, _voices
-    global _caption_index, _proclaim_slot
-    while _performance:
-        _performance.pop().cancel()
+    global _seats, _polyphony, _recital, _verse_cursor
+    global _caption_jitter, _proclaim_slot
+    while _concert:
+        _concert.pop().cancel()
     for area in ("stage", "verses", "log"):
-        element = web.page[area]
-        if element is not None:
-            element.innerHTML = ""
+        web.page[area].innerHTML = ""
     row = web.page["keys"]
     if row is not None:
         row._dom_element.remove()
     del _players[:]
     del _log_lines[:]
     _seats = None
+    _polyphony = None
     _recital = False
     _verse_cursor = 3
-    _caption_index = 0
+    _caption_jitter = 0
     _proclaim_slot = 0
-    _voices = None
     _pulse(True)
