@@ -19,26 +19,26 @@ from verses import VERSES
 # as its poster. The provenance of every file, including its
 # original YouTube source, is recorded in videos/SOURCES.txt.
 MUSICIANS = [
-    "mallets",
     "electric guitar",
+    "mallets",
     "kaoss pad",
-    "rhodes keyboard",
+    "acoustic violin",
     "plastic toy sax",
     "electric bass",
     "harmon trumpet",
     "clarinet",
     "vocals",
     "banjo with ebow",
-    "the poem",
-    "korg ds-10",
+    "the poem",  
+    "ebow",
     "acoustic guitar",
     "balloons ambience",
     "omnichord and qchord",
-    "ebow",
+    "korg ds-10",
     "synth cello",
     "emx-1",
     "acoustic piano",
-    "acoustic violin",
+    "rhodes keyboard",
 ]
 
 # The sections, for scores that compose by family. These are

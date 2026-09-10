@@ -13,8 +13,8 @@ from inbflat import arrange, enter, rest, keys, start
 
 
 random.seed(1935)  # The year Terry Riley was born.
-# An orchestra of 13 musicians, but only 5 concurrent players at once.
-orchestra = arrange(musicians=13, polyphony=5)
+# An orchestra of 9 musicians, but only 5 concurrent players at once.
+orchestra = arrange(musicians=9, polyphony=5)
 
 
 async def performance():

@@ -40,7 +40,7 @@ VERSES = [
     (85.0, "like an adolescent brain shedding neurons. like a snake "
      "slithering from its old skin."),
     (90.0, "like an old man who has come to understand so well"),
-    (93.0, "the point where reality meets the intangible that he is "
+    (93.0, "the point where reality meets the intangible, that he is "
      "able to decide which breath will be his last."),
     (99.0, "And, he will enjoy that breath more than any that he has "
      "taken in his entire life."),
