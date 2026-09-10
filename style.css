@@ -164,6 +164,13 @@ button svg,
   font-size: 0.85rem;
   white-space: pre-wrap;
 }
+/* The colophon: a quiet claim and a pointer to the
+   source, at the foot of the rehearsal room only. */
+#colophon {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
 /* The concert hall: dark, full screen, arrived at by fade. */
 #hall {
   position: fixed;
