@@ -93,15 +93,3 @@ def share(event):
     web.page["share-note"].textContent = (
         "Link copied to clipboard."
     )
-
-
-@when("click", "#show-about")
-def show_about(event):
-    """Open the About dialog over the blurred room."""
-    web.page["about"]._dom_element.showModal()
-
-
-@when("click", "#close-about")
-def close_about(event):
-    """Close the About dialog (Escape also closes it)."""
-    web.page["about"]._dom_element.close()

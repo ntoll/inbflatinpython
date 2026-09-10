@@ -12,7 +12,7 @@
   <main aria-label="The rehearsal room">
     <header>
       <h1>InB&flat;InPython</h1>
-      <button id="show-about"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8.6 9a3.4 3.4 0 1 1 5.6 2.6c-1 .9-2.2 1.5-2.2 3"/><circle cx="12" cy="18.6" r="1.2" fill="currentColor" stroke="none"/></svg>About</button>
+      <a id="about" href="about/"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8.6 9a3.4 3.4 0 1 1 5.6 2.6c-1 .9-2.2 1.5-2.2 3"/><circle cx="12" cy="18.6" r="1.2" fill="currentColor" stroke="none"/></svg>About</a>
     </header>
     <section id="editor" aria-label="The score"></section>
     <p id="controls">
@@ -23,87 +23,6 @@
     <output id="share-note" aria-live="polite"></output>
     <pre id="errors" aria-live="polite"></pre>
   </main>
-
-  <dialog id="about" aria-label="About InB&flat;InPython">
-    <button id="close-about"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"/></svg>Close</button>
-      <h2>What is this?</h2>
-      <p>
-        It's a web-based art installation: a musical score, written in Python, that performs itself in the browser.
-      </p>
-      <h2>Why in B&flat;?</h2>
-      <p>
-        In 1964 the American composer <a href="https://en.wikipedia.org/wiki/Terry_Riley" target="_blank">Terry Riley</a>
-        (non-SSL <a href="http://terryriley.net/" target="_blank">homepage</a>) wrote <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">"In C"</a>: 
-        fifty-three short musical phrases on a single page, to be played by any number of
-        musicians, each repeating each phrase as many times as they please before moving on to the next. This isn't so
-        much a composition as a set of instructions for wonderful community music-making. It was also the birth of
-        <a href="https://en.wikipedia.org/wiki/Minimal_music" target="_blank">musical minimalism</a>.
-      </p>
-      <p>
-        Here's a wonderfully mesmerising version by <a href="https://www.africaexpress.co.uk/" target="_blank">Africa Express</a>; performed in Mali, played on a mix of western, traditional African and modern electronic instruments:
-      </p>
-      <div class="video-container">
-        <iframe src="https://www.youtube-nocookie.com/embed/_FXQ68ZkWVw?si=q2s0etePaNi-hfWD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-      </div>
-      <p>
-        Inspired by "In C", in 2009 <a href="https://www.darrensolomon.com/" target="_blank">Darren Solomon</a>
-        invited musicians to video
-        themselves playing in the key of B&flat; and upload the results,
-        so that any of the videos, started at any time and in
-        any combination, would harmonise together. The
-        result, <a href="https://www.inbflat.net/" target="_blank">In Bb
-        2.0</a>, is a quietly wonderful and hopeful corner of the
-        <a href="https://en.wikipedia.org/wiki/Enshittification" target="_blank">pre-enshittification</a> web, and its
-        <a href="https://www.inbflat.net/faq.html" target="_blank">FAQ</a>
-        warmly invites remixing - a contemporary form of community music-making.
-      </p>
-      <p>
-        This is such a remix with a focus on playful creative coding
-        as a means of musical expression and experimentation. It's
-        open source, and the code is the score, so you can modify it, and share your changes with others;
-        yet another form of community music-making (through community coding).
-      </p>
-      <h2>How?</h2>
-      <p>
-        Your Python code, in effect the musical score, makes
-        you the conductor. Press Play and the performers enter
-        the virtual stage, until the piece plays itself out; press
-        Stop to return to the code. Randomness is a fun aspect of this,
-        and defining the <code>seed</code> makes chance repeatable: the same
-        seed is the same sequence of randomness every time. It guarantees that
-        the same score will always produce the same performance so you can
-        share your own remix with others.
-      </p>
-      <p>
-        One performer speaks rather than plays:
-        <em>Information</em>, a beautifully thoughtful poem written and read by
-        <a href="https://thisscatteredmess.net/" target="_blank">Daniel Donahoo</a>.
-        If the poem emerges, its words rise across the stage as it speaks.
-      </p>
-      <p>
-        Under the bonnet there is no JavaScript written for
-        this page at all: MicroPython runs your score in the
-        browser via
-        <a href="https://bfp.dev/" target="_blank">Browser Friendly
-        Python</a>, which also builds the stage, seats the
-        performers, and listens for each one to finish. The
-        editor is <a href="https://codemirror.net/" target="_blank">
-        CodeMirror</a>.
-        <a href="https://github.com/ntoll/inbflatinpython" target="_blank">View the source</a>; it is all there.
-      </p>
-      <p>
-        You have a lot of creative freedom:
-        <a href="./docs">read the docs</a>,
-        see what you can do, and make something enriching to
-        share with others.
-      </p>
-      <p>
-        Peace,
-      </p>
-      <p>
-        <a href="https://ntoll.org" target="_blank">Nicholas</a>.
-      </p>
-  </dialog>
 
   <section id="hall" aria-label="The performance stage">
     <header>

@@ -94,6 +94,7 @@ a {
   font-size: 0.95rem;
 }
 button,
+#about,
 #controls a,
 #controls-foot a {
   font-family: var(--serif);
@@ -111,6 +112,8 @@ button,
    rules keep their glow-in-the-dark. */
 button:hover,
 button:focus-visible,
+#about:hover,
+#about:focus-visible,
 #controls a:hover,
 #controls a:focus-visible,
 #controls-foot a:hover,
@@ -118,6 +121,7 @@ button:focus-visible,
   background: var(--control-raised);
   box-shadow: 0 0.1rem 0.5rem rgba(35, 32, 27, 0.35);
 }
+#about,
 #controls a,
 #controls-foot a {
   display: inline-block;
@@ -126,6 +130,7 @@ button:focus-visible,
 /* The icons sit in the ink of their controls, sized to the
    type beside them. */
 button svg,
+#about svg,
 #controls a svg,
 #controls-foot a svg {
   width: 1em;
@@ -138,25 +143,6 @@ button svg,
   font-size: 0.9rem;
   min-height: 1.3rem;
   opacity: 0.8;
-}
-/* The About dialog: a page of the room, floated over a
-   translucent blur of everything else. */
-dialog {
-  max-width: 40rem;
-  border: 1px solid var(--rehearsal-line);
-  border-radius: 0.3em;
-  padding: 1.5rem;
-  background: var(--rehearsal-paper);
-  color: var(--rehearsal-ink);
-  font-family: var(--serif);
-}
-dialog::backdrop {
-  background: rgba(35, 32, 27, 0.35);
-  backdrop-filter: blur(4px);
-}
-dialog > button {
-  float: inline-end;
-  margin-inline-start: 1rem;
 }
 /* The error report exists only when there is an error
    to report. */
