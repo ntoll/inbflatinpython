@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>InB♭InPython - Docs</title>
   <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="../favicon.svg">
   <script type="module"
     src="https://importpython.org/v/test/embed.js"></script>
 </head>
@@ -23,7 +24,8 @@
     </p>
     <p>
       The <em>rehearsal room</em> is the light one you arrived
-      from: a code editor holding a score, and a Play button.
+      from: a code editor containing a musical score as Python
+      code, and a Play button.
     </p>
     <p>
       The <em>stage</em> is the dark one: press Play and
@@ -35,32 +37,36 @@
     </p>
     <p>
       The code is the score, and you are the
-      conductor.
+      conductor and arranger.
     </p>
     <p>
-      This page tells the story of that score, from one
+      This documentation tells the story of the score, from one
       solo musician to a full interactive production. Along the
       way, small examples run live right here in the page (press
       the Run buttons - they are real Python, in your browser,
       courtesy of <a href="https://importpython.org/" target="_blank">importpython.org</a>
       and <a href="https://micropython.org/" target="_blank">MicroPython</a>).
       Each idea ends with a link that opens the real
-      rehearsal room with a real score, ready to read, modify and perform.
+      rehearsal room with an illustrative example score, ready to read, modify and perform.
+    </p>
+    <p>
       Musical terms are explained as they arrive; no musical
-      training is assumed, only curiosity and a willingness to play.
+      training is assumed, only curiosity and a willingness to
+      share playful creative coding.
     </p>
 
     <h2 id="your-first-musician">Your first musician <a class="anchor" href="#your-first-musician" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
     <p>
       A performance is a special Python function - one
-      declared with <code>async def</code>, which means "this
-      unfolds through time". Inside it, <code>await</code> means
+      declared with <code>async def</code>, which simply means "this
+      knowingly unfolds through time". Inside it, <code>await</code> means
       "wait here until this is done". That's the only programming 
       theory you really need to know.
     </p>
     <p>
       To get a feel what <code>await</code> does before any music
-      is involved, run this - and notice the pauses are real:
+      is involved, run this - and notice the awaits (where we call
+      <code>asyncio.sleep()</code>) are real pauses in the execution:
     </p>
 
     <import-python type="mpy" terminal title="Feeling time pass">
@@ -68,9 +74,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a beat...&quot;</span><span class="p">)</span>
-<span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;another beat...&quot;</span><span class="p">)</span>
-<span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rests are part of the music.&quot;</span><span class="p">)</span>
 </pre>
     </import-python>

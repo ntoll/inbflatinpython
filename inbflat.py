@@ -1,23 +1,23 @@
 """
-inbflat: the stagehand for InB♭InPython - a remix, in Python,
-of Darren Solomon's "In Bb 2.0" (https://www.inbflat.net/),
-built on Browser Friendly Python.
+inbflat: the fundamental code for InBflatInPython - a remix, in Python,
+of Darren Solomon's "In Bb 2.0" (https://www.inbflat.net/), built on
+Browser Friendly Python (https://bfp.dev).
 
-The visible score imports from this module. Nothing here is
-secret - it simply hides the browser plumbing so the score
-itself can read like music.
+The score created in the website imports from this module. Nothing here is
+secret - it simply hides the browser plumbing so the score itself can read
+like musical code.
 """
 import asyncio
 import random
 from bfp import ffi, web, window
 from verses import VERSES
 
-# The twenty performers of "In Bb 2.0", in stage order. A
-# simple convention maps each name to their media: spaces
-# become hyphens, so "plastic toy sax" plays
+
+# The twenty performers of "In Bb 2.0".
+# Spaces become hyphens, so "plastic toy sax" plays
 # videos/plastic-toy-sax.mp4 with videos/plastic-toy-sax.jpg
 # as its poster. The provenance of every file, including its
-# original YouTube source, is recorded in videos/urls.txt.
+# original YouTube source, is recorded in videos/SOURCES.txt.
 MUSICIANS = [
     "mallets",
     "electric guitar",
@@ -41,13 +41,8 @@ MUSICIANS = [
     "acoustic violin",
 ]
 
-
-# The company by name, in stage order, for scores that want
-# to choose from the whole ensemble.
-performers = list(MUSICIANS)
-
 # The sections, for scores that compose by family. These are
-# ordinary lists: conductors are encouraged to cast their
+# ordinary lists: conductors are encouraged to create their
 # own - by mood, by texture, by whatever the piece wants.
 strings = [
     "electric guitar",
@@ -75,11 +70,11 @@ voices = ["vocals", "the poem"]
 SEAT_COLUMNS = 5
 SEAT_ROWS = 4
 
-# Mutable state for the current evening, reset by clear().
+# Mutable state for the current composition, reset by clear().
 _performance = []  # Scheduled tasks, cancelled by clear().
-_players = []      # The performers on stage this evening.
-_seats = None      # This evening's shuffled seating plan.
-_recital = False   # Whether the poem's words have begun.
+_players = []      # The performers on stage this performance.
+_seats = None      # This performance's shuffled seating plan.
+_recital = False   # Whether the poem's words have begun in this performance.
 _log_lines = []    # The most recent programme notes.
 _verse_cursor = 3  # Vertical %% cursor for verse placing.
 _voices = None     # Polyphony cap; None means unlimited.
@@ -93,7 +88,7 @@ def _log(message):
     _log_lines.append(message)
     del _log_lines[:-3]
     area = web.page["log"]
-    if area is not None:
+    if area:
         area.textContent = "   ".join(
             [">>> " + note for note in _log_lines]
         )
@@ -102,9 +97,9 @@ def _log(message):
 def _shuffle(items):
     """
     Fisher-Yates, in place. MicroPython's random module has
-    no shuffle of its own, so the stagehand carries one. It
+    no shuffle of its own, so we create our own here. It
     is built on random.randrange, so the score's random.seed
-    governs it.
+    still influences it in a deterministic manner.
     """
     for i in range(len(items) - 1, 0, -1):
         j = random.randrange(i + 1)
@@ -113,44 +108,43 @@ def _shuffle(items):
 
 def arrange(musicians=12, polyphony=None, featuring=None):
     """
-    Arrange an orchestra: how many musicians take part, in
-    the entry order the seeded dice decide. polyphony caps
-    how many sound at once - later musicians wait in the
-    wings until a voice falls silent. Naming a performer via
-    featuring guarantees them a place, though the dice still
-    choose when they enter. Asking for more musicians than
-    exist simply invites the whole company.
+    Arrange an orchestra: how many `musicians` take part, no less
+    than 1. `polyphony` caps how many sound at once -
+    later musicians wait in the wings until a voice falls silent.
+    Naming a performer via `featuring` guarantees them a place,
+    though randomness still chooses when they enter. Asking for
+    more `musicians` than exist simply invites the whole company.
+    The musicians are chosen randomly from the available pool.
     """
-    if polyphony is not None:
+    if musicians < 1:
+        raise ValueError("Number of musicians must be at least 1.")
+    if polyphony:
         _set_polyphony(polyphony)
-    if featuring is not None and featuring not in MUSICIANS:
+    if featuring and featuring not in MUSICIANS:
         raise ValueError(
             "No performer called " + repr(featuring) + "."
         )
-    names = list(performers)
+    names = list(MUSICIANS)
     _shuffle(names)
-    musicians = max(0, min(musicians, len(names)))
-    company = names[:musicians]
-    if featuring is not None and featuring not in company:
-        if company:
-            company[random.randrange(len(company))] = featuring
-        else:
-            company.append(featuring)
-    return company
+    orchestra = names[:musicians]
+    if featuring and featuring not in orchestra:
+        orchestra[random.randrange(len(orchestra))] = featuring
+    return orchestra
 
 
 async def rest(shortest=4, longest=None):
     """
-    A musical rest. rest(4) is four seconds of patience;
-    rest(1, 7) lets the seeded dice pick somewhere between
-    one and seven seconds; a bare rest() is four seconds.
+    A musical rest. rest(4) is four seconds of waiting;
+    rest(1, 7) randomly picks somewhere between one and seven
+    seconds of silence; a bare rest() is a default four seconds.
     When the polyphony is capped and every voice is
-    sounding, a rest first listens until one falls silent
+    sounding, a rest first listens until a performer falls silent
     and only then counts its seconds - so the gap the
     conductor wrote always sits between an exit and the
     entrance that follows.
 
-    Rests are the silence where the music happens.
+    Rests are the space where music happens. "My god! What has
+    sound got to do with music?" ~ Charles Ives. ;-)
     """
     await _free_voice()
     if longest is None:
@@ -163,11 +157,9 @@ async def rest(shortest=4, longest=None):
 def _pulse(breathing):
     """
     Set the menu bar's breathing light: alive while voices
-    still sound, still once the final performer has stopped.
+    still sound, stopped once the final performer has exited.
     """
     light = web.page["pulse"]
-    if light is None:
-        return
     if breathing:
         light.classes.remove("still")
     else:
@@ -175,16 +167,16 @@ def _pulse(breathing):
 
 
 def _ended_count():
-    """How many entered performers have finished."""
-    total = 0
-    for player in _players:
-        if player["ended"]:
-            total += 1
-    return total
+    """
+    How many entered performers have finished.
+    """
+    return sum([1 for player in _players if player["ended"]])
 
 
 def _set_polyphony(limit):
-    """Record the polyphony cap after gentle validation."""
+    """
+    Record the polyphony cap after validation.
+    """
     global _voices
     _voices = max(1, int(limit))
 
@@ -210,25 +202,27 @@ async def _free_voice():
         await asyncio.sleep(0.25)
 
 
-def _drift(index, span, step):
+def _drift(jitter, span, step):
     """
-    A deterministic value in [0, span) derived from an index.
-    The poem's typography should look chance-led, but the
-    seeded random stream belongs to the music, and the
-    recital runs concurrently with it - drawing on the same
-    stream would make the rests unrepeatable. Arithmetic
-    stands in for the dice.
+    A deterministic value in [0, span) derived from a jitter
+    counter. 
+    
+    The poem's typography should look chance-led,
+    but the seeded random stream belongs to the music, so
+    arithmetic stands in for randomness.
     """
-    return (index * step) % span
+    return (jitter * step) % span
 
 
 async def _cascade(text, jitter, hold):
     """
-    One line of words on the stage: placed at the measured
-    cursor so lines never collide, drifting horizontally and
-    sized by deterministic chance, fading after its hold.
-    The shared engine beneath the poem's verses and the
-    conductor's captions.
+    Place a line of words onto the stage.
+ 
+    The `text` is displayed on the screen at a horizontal
+    position and size determined by the `jitter` (fed into
+    `_drift`) for `hold` many seconds. Vertical placement is
+    decided via the `global _verse_cursor` that tracks the
+    previous line's box.
     """
     global _verse_cursor
     board = web.page["verses"]

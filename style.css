@@ -365,6 +365,16 @@ import-python {
 import-python iframe {
   margin-top: 1rem;
 }
+/* YouTube responsive embed */
+.video-container {
+    display: flex;
+    justify-content: center;
+}
+    
+iframe {
+    aspect-ratio: 16 / 9;
+    width: 100% !important;
+}
 
 /* Pygments token colours for the documentation's code
    (generated from its default style). */
