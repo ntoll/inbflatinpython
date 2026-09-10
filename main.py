@@ -93,3 +93,10 @@ def share(event):
     web.page["share-note"].textContent = (
         "Link copied to clipboard."
     )
+
+
+# Boot is done: the editor is built and every control is
+# wired, so Play and Share wake and the notice clears.
+web.page["play"]._dom_element.disabled = False
+web.page["share"]._dom_element.disabled = False
+web.page["share-note"].textContent = ""

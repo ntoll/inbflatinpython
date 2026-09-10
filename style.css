@@ -122,6 +122,14 @@ button:focus-visible,
   background: var(--control-raised);
   box-shadow: 0 0.1rem 0.5rem rgba(35, 32, 27, 0.35);
 }
+/* Until Python boots, Play and Share sleep: dim, still,
+   and deaf to the pointer's lift. */
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+  background: var(--rehearsal-ink);
+  box-shadow: none;
+}
 #about,
 #controls a,
 #controls-foot a {
