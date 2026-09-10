@@ -318,6 +318,12 @@ body.performing #hall {
   font-size: 0.85rem;
   background: rgba(15, 16, 19, 0.55);
 }
+/* A typed digit lights its key, so keyboard players see
+   the same answer a pointer press gets. */
+#keys button.struck {
+  background: rgba(242, 237, 227, 0.14);
+  box-shadow: 0 0 0.6rem rgba(242, 237, 227, 0.25);
+}
 #verses {
   position: absolute;
   inset: 0;

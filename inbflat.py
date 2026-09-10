@@ -85,6 +85,7 @@ _verse_cursor = 3   # Vertical % cursor for cascading words.
 _caption_jitter = 0  # Scatter counter for caption().
 _proclaim_slot = 0  # Which mid-stage slot proclaim() uses.
 _audio = None       # Shared audio context for the keys.
+_palette = []       # The keys' notes, for the number keys.
 
 
 def _log(message):
@@ -667,11 +668,51 @@ def _sound(frequency, timbre):
     voice(_audio, frequency)
 
 
+def _strike_note(entry):
+    """Sound the palette `entry`'s note and log its name."""
+    _sound(entry["frequency"], entry["timbre"])
+    _log(entry["label"])
+
+
+async def _flash(key):
+    """Light `key` briefly, so a typed digit reads as a press."""
+    key.classes.add("struck")
+    await asyncio.sleep(0.15)
+    key.classes.remove("struck")
+
+
+def _strike_digit(event):
+    """
+    Sound the key a typed digit points at: 1 to 9 are the
+    first nine keys, 0 the tenth. Idle while the palette is
+    empty (no keys() on stage), so typing digits in the
+    rehearsal room stays just typing.
+    """
+    if not _palette or event.repeat:
+        return
+    if event.ctrlKey or event.altKey or event.metaKey:
+        return
+    place = "1234567890".find(event.key)
+    if place < 0 or place >= len(_palette):
+        return
+    entry = _palette[place]
+    _strike_note(entry)
+    start(_flash(entry["key"]))
+
+
+# The whole hall listens for the digits, so a keyboard
+# player need not focus the on-screen row first.
+window.document.addEventListener(
+    "keydown", ffi.create_proxy(_strike_digit)
+)
+
+
 def keys(timbre="bell", notes=None):
     """
     Lay a row of keys along the foot of the stage.
 
-    Each key sounds a note when pressed. The `timbre`
+    Each key sounds a note when pressed - by pointer, or by
+    typing 1 to 9 and 0 for the tenth. The `timbre`
     chooses the voice: "bell", "pluck", "breath", "drone",
     or your own function of (audio, frequency). The `notes`,
     if given, set the palette - flats and sharps welcome,
@@ -689,6 +730,7 @@ def keys(timbre="bell", notes=None):
     old = web.page["keys"]
     if old is not None:
         old._dom_element.remove()
+    del _palette[:]
     row = web.div(id="keys")
     for note in notes:
         frequency = _frequency(note)
@@ -698,24 +740,31 @@ def keys(timbre="bell", notes=None):
             label = note[0] + "\u266f" + note[2:]
         else:
             label = note
+        key = web.button(label)
+        entry = {
+            "label": label,
+            "frequency": frequency,
+            "timbre": timbre,
+            "key": key,
+        }
+        _palette.append(entry)
 
-        def strike(event, frequency=frequency):
+        def strike(event, entry=entry):
             """Sound the note the instant the key goes down."""
-            _sound(frequency, timbre)
+            _strike_note(entry)
 
-        def strike_key(event, frequency=frequency):
+        def strike_key(event, entry=entry):
             """Sound on Enter or Space, once per press."""
             if event.repeat:
                 return
             if event.key in ("Enter", " "):
                 event.preventDefault()
-                _sound(frequency, timbre)
+                _strike_note(entry)
 
         # An instrument sounds on the way down, not on
         # release, so keys bind pointerdown rather than
         # click - with keydown alongside for keyboard
         # players.
-        key = web.button(label)
         key._dom_element.addEventListener(
             "pointerdown", ffi.create_proxy(strike)
         )
@@ -724,6 +773,7 @@ def keys(timbre="bell", notes=None):
         )
         row.append(key)
     web.page["boards"].append(row)
+    _log("keys ready, click to play or type 0-9")
 
 
 def prop(element, seat=None):
@@ -777,6 +827,7 @@ def clear():
     if row is not None:
         row._dom_element.remove()
     del _players[:]
+    del _palette[:]
     del _log_lines[:]
     _seats = None
     _polyphony = None
