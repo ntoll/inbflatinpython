@@ -27,6 +27,7 @@
   --curtain-fade: 0.9s;
   --entrance-fade: 2.4s;
   --verse-fade: 1.4s;
+  --ghost-presence: 0.12;
 }
 /* The animation is a courtesy, so its absence is too. */
 @media (prefers-reduced-motion: reduce) {
@@ -283,6 +284,29 @@ body.performing #hall {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity var(--entrance-fade);
+}
+/* The departed leave a ghost: when a performance ends its
+   video gives way to a very dim still of the performer,
+   whose presence stays on stage until the hall is cleared.
+   The ghost's delay lets the video fade first, so the
+   ghost breathes in to fill the gap left behind. tacet()
+   retimes both fades inline to its own niente. */
+#stage .ghost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--entrance-fade);
+  transition-delay: var(--entrance-fade);
+}
+#stage figure.ended video {
+  opacity: 0;
+}
+#stage figure.ended .ghost {
+  opacity: var(--ghost-presence);
 }
 /* The audience's keys: a soft row along the foot of
    the stage. */

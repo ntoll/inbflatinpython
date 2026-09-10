@@ -246,8 +246,9 @@ def _watch(video, player):
 
     A playing event logs the entrance, wakes the pulse and,
     for the poem, starts the recital. An ended event logs
-    the exit and fades the figure - the frame stays where it
-    is until clear() sweeps the stage. bfp.web's event table
+    the exit and leaves the performer's ghost - the frame
+    stays where it is until clear() sweeps the stage.
+    bfp.web's event table
     does not yet cover media events, so the listeners attach
     via the _dom_element escape hatch.
     """
@@ -264,12 +265,15 @@ def _watch(video, player):
             start(_recite_poem())
 
     def on_ended(event):
-        """Log the exit; the fade is the exit itself."""
+        """Log the exit; the video gives way to the ghost."""
         if player["ended"]:
             return
         player["ended"] = True
         _log(player["name"] + " stopping")
-        player["figure"].style["opacity"] = "0"
+        # Any followspot dimming lifts with the exit, so
+        # every ghost glows the same.
+        player["figure"].style["opacity"] = "1"
+        player["figure"].classes.add("ended")
         if _ended_count() == len(_players):
             _pulse(False)
 
@@ -305,13 +309,22 @@ async def enter(name, seat=None, dynamic=1):
         playsinline="",
         title=name,
     )
-    figure = web.figure(video)
+    # The ghost: the performer's still, layered beneath the
+    # video and revealed very dimly when their performance
+    # ends. The browser already holds the jpg - it is the
+    # poster.
+    ghost = web.img(src=_media(name, "jpg"), alt="")
+    ghost.classes.add("ghost")
+    figure = web.figure(ghost)
+    figure.append(video)
     figure.style["grid-column"] = str(seat % SEAT_COLUMNS + 1)
     figure.style["grid-row"] = str(seat // SEAT_COLUMNS + 1)
     figure.style["opacity"] = "0"
     player = {
         "name": name,
         "figure": figure,
+        "video": video,
+        "ghost": ghost,
         "media": video._dom_element,
         "started": False,
         "ended": False,
@@ -379,8 +392,9 @@ async def tacet(name, niente=4):
     """
     Silence the musician called `name` where they sit.
 
-    Sound and light fade to nothing together over `niente`
-    seconds; 0 is immediate. Their voice frees at once, so a
+    Sound fades to nothing and the video gives way to the
+    performer's ghost over `niente` seconds; 0 is immediate.
+    Their voice frees at once, so a
     waiting musician may cross-fade in, and they may enter()
     again later at a fresh seat.
     """
@@ -389,9 +403,15 @@ async def tacet(name, niente=4):
         return
     player["ended"] = True
     _log(name + " tacet")
-    figure = player["figure"]
-    figure.style["transition-duration"] = str(niente) + "s"
-    figure.style["opacity"] = "0"
+    duration = str(niente) + "s"
+    player["video"].style["transition-duration"] = duration
+    ghost = player["ghost"]
+    ghost.style["transition-duration"] = duration
+    ghost.style["transition-delay"] = duration
+    # Any followspot dimming lifts with the exit, so every
+    # ghost glows the same.
+    player["figure"].style["opacity"] = "1"
+    player["figure"].classes.add("ended")
     if niente > 0:
         await _glide_media(player["media"], 0, niente)
     player["media"].pause()
