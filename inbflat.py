@@ -86,6 +86,7 @@ _caption_jitter = 0  # Scatter counter for caption().
 _proclaim_slot = 0  # Which mid-stage slot proclaim() uses.
 _audio = None       # Shared audio context for the keys.
 _palette = []       # The keys' notes, for the number keys.
+_warming = []       # Detached videos fetching ahead of need.
 
 
 def _log(message):
@@ -166,6 +167,14 @@ def arrange(musicians=12, polyphony=None, featuring=None):
             company[spare[random.randrange(len(spare))]] = name
         else:
             company.append(name)
+    # Ask the browser to fetch the company's videos ahead
+    # of their entrances - a kindness to slow connections.
+    # The elements are never staged; held in _warming only
+    # so the fetches are not garbage-collected mid-flight.
+    for name in company:
+        _warming.append(
+            web.video(src=_media(name, "mp4"), preload="auto")
+        )
     return company
 
 
@@ -744,6 +753,22 @@ window.document.addEventListener(
 )
 
 
+def _warm_posters():
+    """
+    Fetch every musician's poster ahead of need, so
+    thumbnails and ghosts appear the instant anyone enters
+    - a kindness to slow connections. The images are never
+    staged; they exist only to fill the browser's cache.
+    """
+    for name in MUSICIANS:
+        web.img(src=_media(name, "jpg"))
+
+
+# The bootstrap imports this module while the rehearsal
+# room is quiet, so the posters warm long before Play.
+_warm_posters()
+
+
 def keys(timbre="bell", notes=None):
     """
     Lay a row of keys along the foot of the stage.
@@ -865,6 +890,7 @@ def clear():
         row._dom_element.remove()
     del _players[:]
     del _palette[:]
+    del _warming[:]
     del _log_lines[:]
     _seats = None
     _polyphony = None
