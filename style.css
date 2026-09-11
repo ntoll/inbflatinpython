@@ -407,6 +407,24 @@ iframe {
     width: 100% !important;
 }
 
+/* An epigraph: a composer's words set beneath a heading,
+   the quote and its attribution carried together. */
+main figure {
+  margin: 1.4rem 0;
+}
+main blockquote {
+  margin: 0;
+  padding-inline-start: 1rem;
+  border-inline-start: 3px solid var(--rehearsal-line);
+  font-style: italic;
+}
+main blockquote + figcaption {
+  margin-top: 0.4rem;
+  padding-inline-start: 1rem;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
 /* Pygments token colours for the documentation's code
    (generated from its default style). */
 pre { line-height: 125%; }

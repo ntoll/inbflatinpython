@@ -19,6 +19,13 @@
     </header>
 
     <h2 id="welcome-to-the-concert-hall">Welcome to the concert hall <a class="anchor" href="#welcome-to-the-concert-hall" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>Londoner to taxi driver: "How do you get to the Royal Albert Hall?"<br/>
+            London cabbie: "Practice, guvnor, practice!"</p>
+        </blockquote>
+        <figcaption>~ An urban myth</figcaption>
+    </figure>
     <p>
       InB&flat;InPython is a virtual concert hall with two creative spaces.
     </p>
@@ -33,16 +40,10 @@
       in the key of B&flat; - wait in the wings for your code
       to call on them. The top of the stage contains the Stop
       button, which returns you to the code, and log messages
-      that tell you what's going on. Stop is the score's
-      <code>clear()</code> wearing a label: it cancels
-      everything scheduled, sweeps the stage of players,
-      words and keys, and resets the concert - the one
-      word of the vocabulary you never need to write
-      yourself, because the button says it for you.
+      that tell you what's going on.
     </p>
     <p>
-      The code is the score, and you are the
-      conductor and arranger.
+      The code is the score, and you are the conductor.
     </p>
     <p>
       This documentation tells the story of the score, from one
@@ -62,12 +63,20 @@
     </p>
 
     <h2 id="your-first-musician">Your first musician <a class="anchor" href="#your-first-musician" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+        <figure>
+        <blockquote>
+            <p>One good thing about music<br/>
+            When it hits you (You feel no pain)</p>
+        </blockquote>
+        <figcaption>~ Trenchtown Rock 
+            (<a href="https://en.wikipedia.org/wiki/Bob_Marley_and_the_Wailers" target="_blank">Bob Marley &amp; The Wailers</a>)</figcaption>
+    </figure>
     <p>
       A performance is a special Python function - one
-      declared with <code>async def</code>, which simply means "this
+      declared with <code>async def</code>, which simply means "this code
       knowingly unfolds through time". Inside it, <code>await</code> means
-      "wait here until this is done". That's the only programming 
-      theory you really need to know.
+      "wait here until this is done" (you're awaiting something to finish).
+      That's the only programming theory you really need to know.
     </p>
     <p>
       To get a feel what <code>await</code> does before any music
@@ -105,15 +114,23 @@
     <p>
       <code>enter()</code> brings a musician on stage - their
       video fades up in a randomly chosen seat and begins to
-      sound - and <code>start()</code> is the downbeat that
+      play - and <code>start()</code> is the downbeat that
       sets the whole performance going. When the musician is
-      finished, they fade away to a ghost image of themselves.
+      finished, they fade away to a ghost image of themselves:
+      a visible memory of their contribution.
     </p>
 <p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20enter%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22One%20musician%2C%20one%20entrance.%22%22%22%0A%20%20%20%20await%20enter(%22mallets%22)%0A%0A%0Astart(performance())%0A">Hear one musician enter</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
     
     
 
     <h2 id="meet-the-band">Meet the band <a class="anchor" href="#meet-the-band" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>It was twenty years ago today<br/>
+            When Sgt. Pepper taught the band to play</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/The_Beatles" target="_blank">The Beatles</a></figcaption>
+    </figure>
     <p>
       Twenty musicians wait in the wings, and their names -
       all listed in the following code example - are often opaque.
@@ -160,7 +177,7 @@
     <span class="s2">&quot;rhodes keyboard&quot;</span><span class="p">,</span>
 <span class="p">]</span>
       </pre>
-      <p>Let's create an HTML interface and add a sprinkling of style to our interactive roll-call of musicians:</p>
+      <p>We need to create an HTML interface and add a sprinkling of style to our interactive roll-call of musicians:</p>
       <pre data-role="body">
 <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
 <span class="w">  </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span>
@@ -231,6 +248,12 @@
     </import-python>
 
     <h2 id="rests">Rests <a class="anchor" href="#rests" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>My God! What has sound got to do with music?</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Charles_Ives" target="_blank">Charles Ives</a></figcaption>
+    </figure>
     <p>
       In music, a <em>rest</em> is written silence - as
       deliberate as any note. On this stage,
@@ -258,6 +281,12 @@
 <p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20enter%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22Three%20entrances%2C%20with%20room%20to%20listen%20between.%22%22%22%0A%20%20%20%20await%20enter(%22rhodes%20keyboard%22)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20await%20enter(%22clarinet%22)%0A%20%20%20%20await%20rest(2%2C%2010)%0A%20%20%20%20await%20enter(%22vocals%22)%0A%0A%0Astart(performance())%0A">Hear the rests at work</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
     <h2 id="rolling-the-dice">Rolling the dice <a class="anchor" href="#rolling-the-dice" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>I really didn't have a plan, I just went in and started playing.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Terry_Riley" target="_blank">Terry Riley</a></figcaption>
+    </figure>
     <p>
       Terry Riley's "In C" (1964) and Darren Solomon's
       "In Bb 2.0" (2009) - the two ancestors of this piece -
@@ -374,10 +403,16 @@
 <p><a target="_blank" rel="opener" href="../#score=import%20random%0Afrom%20inbflat%20import%20arrange%2C%20enter%2C%20rest%2C%20start%0A%0Arandom.seed(2009)%20%20%23%20The%20year%20of%20%22In%20Bb%202.0%22.%0Aorchestra%20%3D%20arrange(musicians%3D6%2C%20featuring%3D%22plastic%20toy%20sax%22)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22Six%20are%20dealt%3B%20the%20toy%20sax%20is%20promised%20a%20seat.%22%22%22%0A%20%20%20%20for%20musician%20in%20orchestra%3A%0A%20%20%20%20%20%20%20%20await%20enter(musician)%0A%20%20%20%20%20%20%20%20await%20rest(6)%0A%0A%0Astart(performance())%0A">Promise a musician their place</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
     <h2 id="polyphony">Polyphony <a class="anchor" href="#polyphony" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>The idea is distributed in space. It isn't only in one part; one part can't express the idea any longer, only the union of parts can completely express the idea.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Anton_Webern" target="_blank">Anton Webern</a></figcaption>
+    </figure>
     <p>
       <em>Polyphony</em> is a musical term we use to mean "how many voices sound at
-      once". Twenty at all at once is a glorious cacophony; three to five is a subtle
-      texture.
+      once". Twenty all at once is a glorious cacophony; three to five is a subtle
+      texture; one soloist is a uniquely personal encounter through sound.
     </p>
     <p>
       <code>arrange(musicians=8, polyphony=2)</code>
@@ -442,6 +477,12 @@
 <p><a target="_blank" rel="opener" href="../#score=import%20random%0Afrom%20inbflat%20import%20arrange%2C%20enter%2C%20polyphony%2C%20rest%2C%20start%0A%0Arandom.seed(1964)%20%20%23%20The%20year%20of%20%22In%20C%22.%0Aorchestra%20%3D%20arrange(musicians%3D8%2C%20polyphony%3D4)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22An%20intro%20of%20four%20voices%2C%20a%20solo%2C%20an%20outro%20of%20three.%22%22%22%0A%20%20%20%20for%20musician%20in%20orchestra%5B%3A4%5D%3A%0A%20%20%20%20%20%20%20%20await%20enter(musician)%0A%20%20%20%20%20%20%20%20await%20rest(3)%0A%20%20%20%20await%20rest(8)%0A%20%20%20%20polyphony(1)%20%20%23%20Entries%20now%20wait%20for%20an%20empty%20stage.%0A%20%20%20%20await%20enter(orchestra%5B4%5D)%20%20%23%20The%20solo%2C%20once%20truly%20alone.%0A%20%20%20%20await%20rest(10)%0A%20%20%20%20polyphony(3)%20%20%23%20The%20outro%20opens%20the%20texture%20again.%0A%20%20%20%20for%20musician%20in%20orchestra%5B5%3A%5D%3A%0A%20%20%20%20%20%20%20%20await%20enter(musician)%0A%20%20%20%20%20%20%20%20await%20rest(3%2C%208)%0A%0A%0Astart(performance())%0A">Thin the texture mid-piece</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
     <h2 id="playing-together">Playing together <a class="anchor" href="#playing-together" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>Make your interactions with people transformational, not just transactional.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Patti_Smith" target="_blank">Patti Smith</a></figcaption>
+    </figure>   
     <p>
       Chance is only one way to compose. You can also
       <em>through-compose</em>: write every entrance yourself,
@@ -478,6 +519,12 @@
 <p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20enter%2C%20ensemble%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22The%20winds%20arrive%20as%20one%2C%20then%20a%20string%20joins%20them.%22%22%22%0A%20%20%20%20await%20ensemble(%0A%20%20%20%20%20%20%20%20enter(%22harmon%20trumpet%22)%2C%0A%20%20%20%20%20%20%20%20enter(%22clarinet%22)%2C%0A%20%20%20%20%20%20%20%20enter(%22plastic%20toy%20sax%22)%2C%0A%20%20%20%20)%0A%20%20%20%20await%20rest(10)%0A%20%20%20%20await%20enter(%22acoustic%20violin%22)%0A%0A%0Astart(performance())%0A">Hear the winds arrive as one</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
     <h2 id="dynamics">Dynamics <a class="anchor" href="#dynamics" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>A loud voice is not always angry; a soft voice not always to be dismissed; and a well-placed silence can be the indisputable last word.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Gloria_Naylor" target="_blank">Gloria Naylor</a></figcaption>
+    </figure>
     <p>
       <em>Dynamics</em> are music's louds and softs. A
       <em>crescendo</em> grows; a <em>diminuendo</em> quietens;
@@ -527,6 +574,13 @@
 <p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20(crescendo%2C%20diminuendo%2C%20enter%2C%20rest%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20start%2C%20tacet)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22Louder%2C%20softer%2C%20and%20away%20to%20nothing.%22%22%22%0A%20%20%20%20await%20enter(%22mallets%22%2C%20dynamic%3D0.3)%0A%20%20%20%20await%20rest(10)%0A%20%20%20%20await%20crescendo(%22mallets%22%2C%20to%3D1.0%2C%20over%3D4)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20await%20diminuendo(%22mallets%22%2C%20to%3D0.3%2C%20over%3D4)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20await%20tacet(%22mallets%22%2C%20niente%3D8)%0A%0A%0Astart(performance())%0A">Hear the mallets rise, sink and vanish</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
     <h2 id="the-lighting-desk">The lighting desk <a class="anchor" href="#the-lighting-desk" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>I felt extremely uncomfortable as the focal point, in the spotlight. I really like the behind the scenes role, because all my freedom is there.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Brian_Eno" target="_blank">Brian Eno</a></figcaption>
+    </figure>     
+    
     <p>
       A <em>followspot</em> is the moving beam that picks a
       soloist out of the dark; a <em>wash</em> is even light
@@ -560,6 +614,16 @@
 <p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20(enter%2C%20ensemble%2C%20followspot%2C%20rest%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20start%2C%20wash)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22Three%20arrive%3B%20the%20light%20finds%20one%3B%20then%20an%20even%20wash.%22%22%22%0A%20%20%20%20await%20ensemble(%0A%20%20%20%20%20%20%20%20enter(%22electric%20guitar%22)%2C%0A%20%20%20%20%20%20%20%20enter(%22electric%20bass%22)%2C%0A%20%20%20%20%20%20%20%20enter(%22kaoss%20pad%22)%2C%0A%20%20%20%20)%0A%20%20%20%20await%20rest(8)%0A%20%20%20%20followspot(%22electric%20guitar%22)%0A%20%20%20%20await%20rest(8)%0A%20%20%20%20wash()%0A%0A%0Astart(performance())%0A">See the followspot move</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
     <h2 id="words-on-the-stage">Words on the stage <a class="anchor" href="#words-on-the-stage" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>Although they are<br/>
+            Only breath, words<br/>
+            which I command<br/>
+            are immortal.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Sappho" target="_blank">Sappho</a></figcaption>
+    </figure>    
+    
     <p>
       One of the twenty performers speaks rather than plays:
       "Information", a is beautifully thoughtful poem written and read by 
@@ -641,6 +705,12 @@
 <p><a target="_blank" rel="opener" href="../#score=import%20random%0Afrom%20inbflat%20import%20arrange%2C%20enter%2C%20proclaim%2C%20recite%2C%20rest%2C%20start%0A%0Arandom.seed(2026)%0Aorchestra%20%3D%20arrange(musicians%3D3)%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22A%20small%20texture%20beneath%20your%20own%20words.%22%22%22%0A%20%20%20%20for%20musician%20in%20orchestra%3A%0A%20%20%20%20%20%20%20%20await%20enter(musician)%0A%20%20%20%20%20%20%20%20await%20rest(3)%0A%20%20%20%20recite(%5B%0A%20%20%20%20%20%20%20%20(0%2C%20%22Code%20runs%20our%20world.%22)%2C%0A%20%20%20%20%20%20%20%20(5%2C%20%22Yet%20code%20isn't%20written%20for%20computers.%22)%2C%0A%20%20%20%20%20%20%20%20(11%2C%20%22We%20write%20code%20because%20we%20are%20human%20beings%22)%2C%0A%20%20%20%20%20%20%20%20(14%2C%20%22imbued%20with%20ideas%2C%20imagination%20and%20feelings.%22)%2C%0A%20%20%20%20%20%20%20%20(19%2C%20%22Code%20expresses%20our%20thoughts%20made%20digital%3A%22)%2C%0A%20%20%20%20%20%20%20%20(22%2C%20%22a%20medium%20for%20our%20values%2C%20cultures%20and%20ways%20of%20life.%22)%2C%0A%20%20%20%20%20%20%20%20(28%2C%20%22If%20you%20knew%20code%2C%20what%20would%20you%20create%3F%22)%2C%0A%20%20%20%20%20%20%20%20(35%2C%20%22For%20those%20who%20venture%20into%20the%20world%20of%20code%22)%2C%0A%20%20%20%20%20%20%20%20(38%2C%20%22will%20be%20the%20ones%20creating%20our%20futures.%22)%2C%0A%20%20%20%20%5D)%0A%20%20%20%20await%20rest(44)%0A%20%20%20%20await%20proclaim(%22What%20will%20your%20contribution%20be..%3F%22)%0A%20%20%20%20await%20proclaim(%22The%20only%20way%20to%20find%20out%2C%20is%20to%20try.%22)%0A%0A%0Astart(performance())%0A">Recite a poem of your own</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
     <h2 id="the-audience-s-instrument">The audience's instrument <a class="anchor" href="#the-audience-s-instrument" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>I know that the most joy in my life has come to me from my violin.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Albert_Einstein" target="_blank">Albert Einstein</a></figcaption>
+    </figure>
     <p>
       "In C" and "In Bb" are both examples of community music-making.
       This site encourages community music-making by sharing code. 
@@ -703,7 +773,6 @@
 <span class="n">start</span><span class="p">(</span><span class="n">performance</span><span class="p">())</span>
 </pre>
     <p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20caption%2C%20enter%2C%20keys%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22A%20blues%20palette%20for%20the%20audience%2C%20spelled%20in%20sharps.%22%22%22%0A%20%20%20%20await%20enter(%22electric%20bass%22)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20keys(%22pluck%22%2C%20notes%3D%5B%22Bb3%22%2C%20%22C%234%22%2C%20%22D%234%22%2C%20%22E4%22%2C%20%22F4%22%2C%20%22G%234%22%5D)%0A%20%20%20%20await%20caption(%22a%20B%20flat%20blues%20-%20press%20something%20bent%22)%0A%0A%0Astart(performance())%0A">Play along with a B&flat; blues</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
-
 
     <p>
       The key's timbre is nothing more than a function that makes
@@ -784,6 +853,12 @@
     </import-python>
 
     <h2 id="seats-and-props">Seats and props <a class="anchor" href="#seats-and-props" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>I call architecture frozen music.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Johann_Wolfgang_von_Goethe" target="_blank">Johann Wolfgang von Goethe</a></figcaption>
+    </figure>
     <p>
       The stage has twenty seats in a grid, five across and
       four deep, numbered 0 to 19 reading left to right, top
@@ -816,7 +891,13 @@
 </pre>
 <p><a target="_blank" rel="opener" href="../#score=from%20bfp%20import%20web%0Afrom%20inbflat%20import%20enter%2C%20prop%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22A%20front%20row%20arranged%20by%20hand%2C%20and%20one%20prop.%22%22%22%0A%20%20%20%20await%20enter(%22mallets%22%2C%20seat%3D0)%0A%20%20%20%20await%20rest(3)%0A%20%20%20%20await%20enter(%22acoustic%20guitar%22%2C%20seat%3D2)%0A%20%20%20%20await%20rest(3)%0A%20%20%20%20await%20enter(%22acoustic%20violin%22%2C%20seat%3D4)%0A%20%20%20%20await%20rest(3)%0A%20%20%20%20prop(web.p(%22(reserved)%22)%2C%20seat%3D3)%0A%0A%0Astart(performance())%0A">Arrange a front row by hand</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
-    <h2 id="take-it-it-is-yours">Take it - it is yours <a class="anchor" href="#take-it-it-is-yours" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <h2 id="make-your-music">Make your music <a class="anchor" href="#make-your-music" aria-label="Link to this section"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></a></h2>
+    <figure>
+        <blockquote>
+            <p>Music was my refuge. I could crawl into the space between the notes and curl my back to loneliness.</p>
+        </blockquote>
+        <figcaption>~ <a href="https://en.wikipedia.org/wiki/Maya_Angelou" target="_blank">Maya Angelou</a></figcaption>
+    </figure>
     <p>
       Every link above works because of a small honest trick:
       the Share button in the rehearsal room puts your whole
@@ -837,7 +918,7 @@
       and whatever you do, it will be in B&flat;, so it
       cannot be wrong.
     </p>
-    <p>Have fun! Share your music! Participate in the community!</p>
+    <p>Have fun! Discover your voice! Share your music!</p>
     <p>Best wishes,</p>
     <p><a href="https://ntoll.org/" target="_blank">Nicholas</a>.</p>
     <footer>
