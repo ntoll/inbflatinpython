@@ -29,7 +29,7 @@ MUSICIANS = [
     "clarinet",
     "vocals",
     "banjo with ebow",
-    "the poem",  
+    "the poem",
     "ebow",
     "acoustic guitar",
     "balloons ambience",
@@ -129,26 +129,43 @@ def arrange(musicians=12, polyphony=None, featuring=None):
 
     `musicians` is how many take part, chosen and ordered
     by the seeded shuffle; asking for more than exist
-    invites the whole company. `polyphony`, if given, caps how many
-    sound at once. `featuring`, if given, names a musician
-    guaranteed a place at a random position in the order.
+    invites the whole company. `polyphony`, if given, caps
+    how many sound at once. `featuring`, if given, names a
+    musician - or a list of them - each guaranteed a place
+    at a random position in the order.
     """
     global _polyphony
     if polyphony is not None:
         _polyphony = max(1, int(polyphony))
-    if featuring is not None and featuring not in MUSICIANS:
-        raise ValueError(
-            "No performer called " + repr(featuring) + "."
-        )
+    if featuring is None:
+        featured = []
+    elif isinstance(featuring, str):
+        featured = [featuring]
+    else:
+        featured = list(dict.fromkeys(featuring))
+    for name in featured:
+        if name not in MUSICIANS:
+            raise ValueError(
+                "No performer called " + repr(name) + "."
+            )
     names = list(MUSICIANS)
     _shuffle(names)
     musicians = max(0, min(musicians, len(names)))
     company = names[:musicians]
-    if featuring is not None and featuring not in company:
-        if company:
-            company[random.randrange(len(company))] = featuring
+    # Each featured musician who missed the deal takes the
+    # seat of a randomly chosen unfeatured member - or an
+    # extra seat, if nobody can be spared.
+    for name in featured:
+        if name in company:
+            continue
+        spare = [
+            place for place, present in enumerate(company)
+            if present not in featured
+        ]
+        if spare:
+            company[spare[random.randrange(len(spare))]] = name
         else:
-            company.append(featuring)
+            company.append(name)
     return company
 
 
