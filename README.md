@@ -14,10 +14,17 @@ you can do).
 ## Performing it locally
 
 It is a static site: serve this directory over http and open
-the page - for example `python -m http.server`, then visit
-`http://localhost:8000/`. Opening `index.html` from the
-filesystem is not enough, as the page fetches its Python
-files and media over http.
+the page. The server must support HTTP Range requests, which
+browsers rely on to stream video - Python's built-in
+`http.server` does not, and the musicians will stall without
+ever playing. Instead:
+
+    pip install rangehttpserver
+    python -m RangeHTTPServer 8000
+
+then visit `http://localhost:8000/`. Opening `index.html`
+straight from the filesystem is not enough, as the page
+fetches its Python files and media over http.
 
 ## The rooms
 
