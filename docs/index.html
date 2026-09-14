@@ -27,7 +27,7 @@
         <figcaption>~ An urban myth</figcaption>
     </figure>
     <p>
-      InB&flat;InPython is a virtual concert hall with two creative spaces.
+      Think of InB&flat;InPython as a virtual concert hall with two creative spaces.
     </p>
     <p>
       The <em>rehearsal room</em> is the light one you arrived
@@ -57,7 +57,7 @@
       rehearsal room with an illustrative example score, ready to read, modify and perform.
     </p>
     <p>
-      Musical terms are explained as they arrive; no musical
+      Musical terms are explained as we meet them and no musical
       training is assumed, only curiosity and a willingness to
       share playful creative coding.
     </p>
@@ -75,8 +75,10 @@
       A performance is a special Python function - one
       declared with <code>async def</code>, which simply means "this code
       knowingly unfolds through time". Inside it, <code>await</code> means
-      "wait here until this is done" (you're awaiting something to finish).
+      "wait here until this is done" (you're simply awaiting something to finish).
       That's the only programming theory you really need to know.
+      If your code doesn't work, <strong>it's most likely to do with a missing or misused
+      <code>async</code> or <code>await</code>.</strong>
     </p>
     <p>
       To get a feel what <code>await</code> does before any music
@@ -85,7 +87,7 @@
       pauses in the execution:
     </p>
 
-    <import-python type="mpy" terminal title="Feeling time pass">
+    <import-python type="mpy" terminal terminal-rows="6"title="Feeling time pass">
 <pre>
 <span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
@@ -152,7 +154,7 @@
       the technology underneath this project - harmonises with the browser environment.
     </p>
     <import-python type="mpy" title="Meet the band" send-embedder-url run-label="Meet the band">
-      <p>First, let's list all the musicians:</p>
+      <p>First, let's list all the musicians in <code>band.py</code>:</p>
       <pre title="band.py">
 <span class="n">MUSICIANS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;electric guitar&quot;</span><span class="p">,</span>
@@ -203,8 +205,8 @@
 <span class="w">    </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#3d382f</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="w">  </span><span class="nt">video</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">%</span><span class="p">;</span>
-<span class="w">    </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="kt">rem</span><span class="p">;</span>
+<span class="w">    </span><span class="nt">width</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="kt">rem</span><span class="p">;</span>
+<span class="w">    </span><span class="nt">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="o">%</span><span class="p">;</span>
 <span class="w">    </span><span class="k">aspect-ratio</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 <span class="w">    </span><span class="k">object-fit</span><span class="p">:</span><span class="w"> </span><span class="kc">cover</span><span class="p">;</span>
 <span class="w">    </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#0f1013</span><span class="p">;</span>
@@ -218,7 +220,7 @@
       </pre>
       <p>Finally, let's write some Python code to help us audition our musicians.</p>
       <pre>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bfp</span><span class="w"> </span><span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bfp</span><span class="w"> </span><span class="kn">import</span> <span class="n">web</span><span class="p">,</span> <span class="n">when</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">band</span><span class="w"> </span><span class="kn">import</span> <span class="n">MUSICIANS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importpython</span><span class="w"> </span><span class="kn">import</span> <span class="n">EMBEDDER_URL</span>
 
@@ -231,6 +233,7 @@
     <span class="n">dropdown</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">web</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 
 
+<span class="nd">@when</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="s2">&quot;#meet&quot;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Show and play the chosen musician.&quot;&quot;&quot;</span>
     <span class="n">where</span> <span class="o">=</span> <span class="n">VIDEOS</span> <span class="o">+</span> <span class="n">dropdown</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
@@ -238,9 +241,6 @@
     <span class="n">stage</span><span class="o">.</span><span class="n">poster</span> <span class="o">=</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">&quot;.jpg&quot;</span>
     <span class="n">stage</span><span class="o">.</span><span class="n">src</span> <span class="o">=</span> <span class="n">where</span> <span class="o">+</span> <span class="s2">&quot;.mp4&quot;</span>
     <span class="n">stage</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
-
-
-<span class="n">web</span><span class="o">.</span><span class="n">page</span><span class="p">[</span><span class="s2">&quot;meet&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">on_click</span> <span class="o">=</span> <span class="n">meet</span>
       </pre>
       <p>
         Click "Meet the band" then select a musician from the dropdown menu and press play to meet them.
@@ -256,12 +256,12 @@
     </figure>
     <p>
       In music, a <em>rest</em> is written silence - as
-      deliberate as any note. On this stage,
-      <code>await rest(6)</code> is six seconds of patience;
+      deliberate as any note. On the stage, the code
+      <code>await rest(6)</code> is six seconds of quiet patience and
       <code>await rest(2, 10)</code> randomly chooses
       somewhere between two and ten seconds of silence. Rests are where the
       listening happens, and they are what turn a list of
-      entrances into a piece:
+      entrances into a deliberate piece of sound sculpture:
     </p>
 <pre>
 <span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">enter</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
@@ -298,9 +298,9 @@
       makes chance repeatable: the same seed deals the same
       random shuffle, every time.
     </p>
-    <import-python type="mpy" terminal
+    <import-python type="mpy" terminal terminal-rows="8"
       title="Seeded dice deal the same hand">
-      <p>Here's <code>band.py</code> - that defines the list of musicians.</p>
+      <p>Here's a Python list containing the musicians:</p>
       <pre title="band.py">
 <span class="n">MUSICIANS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;electric guitar&quot;</span><span class="p">,</span>
@@ -347,7 +347,7 @@
 </pre>
     </import-python>
     <p>
-      That is MicroPython's own shuffle, so it deals exactly
+      That is InB&flat;InPython's own shuffle, so it deals exactly
       as the stage does. On the stage, all of this is one
       line: <code>arrange()</code> shuffles the musicians and
       returns your orchestra. Change the seed and press Play
@@ -376,11 +376,11 @@
 
     <p>
       The dice are fair, which also makes them heartless:
-      the musician you love may simply not be dealt.
+      the musician you love may simply not be chosen.
       <code>arrange(featuring=...)</code> names one
       performer - or a list of them - each guaranteed a
-      place in the orchestra; the dice still choose
-      everyone else, and still choose where in the order
+      place in the orchestra; the <code>random</code> module still chooses
+      everyone else, and also chooses where in the order
       your featured musicians appear.
     </p>
 <pre>
@@ -901,9 +901,7 @@
     <p>
       Every link above works because of a small honest trick:
       the Share button in the rehearsal room puts your whole
-      score into the address after the <code>#</code> - the
-      URL fragment, which never leaves your browser - and
-      copies the link. Send it anywhere; whoever opens it
+      score into a URL. Send it anywhere; whoever opens it
       finds your score in their editor. There is no server,
       no account, no saving: a performance simply is its
       link.
@@ -912,14 +910,16 @@
       So: change a seed. Compose a section of your own. Fade
       the whole band al niente and proclaim something. Write
       a poem and <code>recite()</code> it over the drones.
-      Build an instrument nobody has heard. The twenty
+      Build an instrument nobody has heard.
+    </p>
+    <p>
+      The twenty
       musicians of "In Bb 2.0" have been waiting many years
       in the wings for a conductor exactly like you -
       and whatever you do, it will be in B&flat;, so it
       cannot be wrong.
     </p>
-    <p>Have fun! Discover your voice! Share your music!</p>
-    <p>Best wishes,</p>
+    <p>Peace,</p>
     <p><a href="https://ntoll.org/" target="_blank">Nicholas</a>.</p>
     <footer>
       <p id="controls-foot">
