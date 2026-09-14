@@ -347,13 +347,15 @@
 </pre>
     </import-python>
     <p>
-      That is InB&flat;InPython's own shuffle, so it deals exactly
+      That is InB&flat;InPython's own shuffle function, so this example rolls
+      the <code>random</code> dice exactly
       as the stage does. On the stage, all of this is one
       line: <code>arrange()</code> shuffles the musicians and
       returns your orchestra. Change the seed and press Play
       again: a different group of musicians will appear. Keep
       the seed the same and press Play again: the same group
-      will appear in exactly the same order.
+      will appear in exactly the same order. If you don't specify
+      a seed, a new random order will be generated each time.
     </p>
 <pre>
 <span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
@@ -717,7 +719,7 @@
       But the <code>keys()</code> function enlarges that community
       to the audience: a row of soft round keys along the
       foot of the stage, each sounding a note of the B&flat;
-      major pentatonic scale - five notes chosen so that
+      major pentatonic scale - notes chosen so that
       nothing you press can be wrong. A <em>timbre</em> is a
       sound's character - the reason a trumpet and a violin
       playing the same note sound different. The keys come with four
@@ -743,20 +745,20 @@
 <p><a target="_blank" rel="opener" href="../#score=from%20inbflat%20import%20caption%2C%20enter%2C%20keys%2C%20rest%2C%20start%0A%0A%0Aasync%20def%20performance()%3A%0A%20%20%20%20%22%22%22A%20drone%20settles%2C%20then%20the%20keys%20are%20yours.%22%22%22%0A%20%20%20%20await%20enter(%22ebow%22)%0A%20%20%20%20await%20rest(6)%0A%20%20%20%20keys(%22pluck%22)%20%20%23%20Or%20%22bell%22%2C%20%22breath%22%20and%20%22drone%22%0A%20%20%20%20await%20caption(%22press%20a%20key%20-%20whatever%20you%20play%20belongs%22)%0A%0A%0Astart(performance())%0A">Settle a drone and play along</a> - it opens in the rehearsal room with this score in the editor, ready for Play.</p>
 
     <p>
-      The keys answer the computer keyboard too: the digits
+      The keys respond to the computer keyboard too: the digits
       1 to 9 strike the first nine keys, 0 the tenth, and
       each key lights up as it sounds - the log says so
       when the row appears: <code>keys ready, click to play
-      or type 0-9</code>. And where a pointer can only
+      or type 0-9</code>. And where a mouse click can only
       press one key at a time, a keyboard can press several
-      digits at once: the audience can play chords.
+      digits at once: the audience can play chords or strum!
     </p>
 <p>
-      The available notes are a musical decision too, and flats and
-      sharps are both welcome. Here the audience gets the
+      The selected notes are a musical decision too, and flats and
+      sharps are both valid. Here the audience gets the
       B&flat; blues scale - the pentatonic's streetwise
       cousin, whose flattened fifth makes everything sound
-      knowing - so whatever they press is up to something:
+      knowing - so whatever they press sounds funky:
     </p>
 <pre>
 <span class="kn">from</span><span class="w"> </span><span class="nn">inbflat</span><span class="w"> </span><span class="kn">import</span> <span class="n">caption</span><span class="p">,</span> <span class="n">enter</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">rest</span><span class="p">,</span> <span class="n">start</span>
@@ -779,10 +781,10 @@
       a sound.
     </p>
     <p>
-      Here is a bell built from first principles -
+      Here is a bell built from scratch -
       an oscillator and an envelope - with a button to ring
-      it. Change the frequency, the wave, the ramps: this is
-      how instruments are born, and a function like
+      it. Play with the frequency, the wave and the ramps: this is
+      how new instruments and effects are born, and a function like
       <code>ring</code>, taking the audio context and a
       frequency, is exactly what
       <code>keys(timbre=...)</code> accepts. MDN explains
@@ -860,16 +862,16 @@
         <figcaption>~ <a href="https://en.wikipedia.org/wiki/Johann_Wolfgang_von_Goethe" target="_blank">Johann Wolfgang von Goethe</a></figcaption>
     </figure>
     <p>
-      The stage has twenty seats in a grid, five across and
+      The stage containing the band has twenty seats in a grid, five across and
       four deep, numbered 0 to 19 reading left to right, top
       to bottom. (Musicians count from one and programmers
       from zero; the management is aware of the dispute.) The
-      dice normally choose seating, but <code>enter(name,
-      seat=...)</code> places a musician exactly, and
-      <code>prop()</code> seats any element you can build
+      default random dice normally choose seating, but <code>enter(name,
+      seat=...)</code> places a musician exactly where you want them, and
+      <code>prop()</code> seats any HTML element you can build
       with <code>bfp.web</code> - a sign, a picture, a button
       of your own devising. Props take seats but not voices:
-      the polyphony ignores furniture.
+      and the polyphony ignores such furniture.
     </p>
 <pre>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bfp</span><span class="w"> </span><span class="kn">import</span> <span class="n">web</span>
@@ -907,17 +909,22 @@
       link.
     </p>
     <p>
-      So: change a seed. Compose a section of your own. Fade
-      the whole band al niente and proclaim something. Write
-      a poem and <code>recite()</code> it over the drones.
-      Build an instrument nobody has heard.
+      Don't just sit there, do something!
     </p>
+    <ul>
+      <li>Change a seed.</li>
+      <li>Compose a section of your own.</li>
+      <li>Fade the whole band al niente and proclaim something.</li>
+      <li>Write a poem and <code>recite()</code> it over the drones.</li>
+      <li>Build an instrument nobody has heard.</li>
+      <li>Surprise and delight us by sharing your creativity.</li>
+    </ul>
     <p>
       The twenty
       musicians of "In Bb 2.0" have been waiting many years
-      in the wings for a conductor exactly like you -
+      in the wings for a conductor exactly like you ~
       and whatever you do, it will be in B&flat;, so it
-      cannot be wrong.
+      cannot be wrong. :-)
     </p>
     <p>Peace,</p>
     <p><a href="https://ntoll.org/" target="_blank">Nicholas</a>.</p>

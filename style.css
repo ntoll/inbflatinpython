@@ -383,9 +383,21 @@ pre {
   border-radius: 0.3em;
   overflow-x: auto;
 }
+/* Inline code fragments wear the same paper and line as
+   the pre blocks, at a scale that sits inside a sentence. */
 code {
   font-family: var(--mono);
   font-size: 0.9em;
+  background: var(--code-paper);
+  border: 1px solid var(--rehearsal-line);
+  border-radius: 0.25em;
+  padding: 0.1em 0.35em;
+}
+pre code {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
 }
 import-python {
   display: block;
