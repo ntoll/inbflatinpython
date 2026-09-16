@@ -61,6 +61,8 @@ main header {
   align-items: center;
   justify-content: space-between;
   gap: 1.2rem;
+  flex-wrap: wrap;    
+  margin-block-end: 0.6rem;
 }
 h1 {
   font-size: 2.3rem;
@@ -107,6 +109,16 @@ button,
   color: var(--rehearsal-paper);
   border: 1px solid var(--rehearsal-ink);
   transition: background 0.2s, box-shadow 0.2s;
+  flex-wrap: wrap;
+  white-space: nowrap;
+}
+/* The control rows flow as buttons that wrap with even
+   breathing room on narrow screens. */
+#controls,
+#controls-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 /* Every control answers the pointer (and keyboard focus):
    in the paper rooms a warmer lift, while the hall's own
@@ -435,6 +447,25 @@ main blockquote + figcaption {
   padding-inline-start: 1rem;
   font-size: 0.9rem;
   opacity: 0.75;
+}
+
+/* On a phone held upright, a quiet word: the stage suits
+   landscape. The hint retires itself on rotation. */
+#turn-hint {
+  display: none;
+}
+@media (orientation: portrait) and (pointer: coarse) {
+  #hall header {
+    flex-wrap: wrap;
+  }
+  #turn-hint {
+    display: block;
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 0.85rem;
+    font-style: italic;
+    opacity: 0.7;
+  }
 }
 
 /* Pygments token colours for the documentation's code

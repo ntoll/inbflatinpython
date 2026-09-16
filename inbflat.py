@@ -507,7 +507,12 @@ async def _cascade(text, jitter, hold):
     left = 6 + _drift(jitter, 30, 37)
     size = 140 + _drift(jitter, 110, 53)
     verse.style["left"] = str(left) + "%"
-    verse.style["font-size"] = str(size / 100) + "rem"
+    # rem on wide screens; on narrow ones the vw term wins
+    # and the words scale down with the stage.
+    verse.style["font-size"] = (
+        "min(" + str(size / 100) + "rem, "
+        + str(size / 40) + "vw)"
+    )
     if _verse_cursor > 82:
         _verse_cursor = 3
     verse.style["top"] = str(_verse_cursor) + "%"
@@ -546,7 +551,7 @@ async def _still(text, slot, hold):
     verse.style["width"] = "max-content"
     verse.style["max-width"] = "80%"
     verse.style["text-align"] = "center"
-    verse.style["font-size"] = "2.6rem"
+    verse.style["font-size"] = "min(2.6rem, 6.5vw)"
     verses.append(verse)
     await asyncio.sleep(0.05)
     verse.style["opacity"] = "1"
